@@ -258,8 +258,8 @@ export default function LandingPage() {
               a="Non, elles restent indicatives et sont toujours validées par le cabinet. Le remboursement définitif relève de l'Assurance Maladie et de la complémentaire santé."
             />
             <Faq
-              q="Pourquoi 3 devis ?"
-              a="Garant-AI propose un devis initial, un devis « remboursement maximal » et un devis « reste à charge 0 € ». Le patient peut ainsi comparer ses options et choisir en toute clarté."
+              q="Pourquoi un devis optimisé ?"
+              a="Garant-AI propose au praticien un devis optimisé qui garantit le meilleur traitement pour le patient. Celui-ci bénéficie de la prise en charge maximale et d'une facilité de paiement, ce qui rend le plan de traitement plus simple à accepter."
             />
             <Faq
               q="Le patient doit-il créer un compte ?"
