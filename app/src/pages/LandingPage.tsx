@@ -251,35 +251,35 @@ export default function LandingPage() {
           <div className="faq-list">
             <Faq
               q="Comment Garant-AI lit-il la mutuelle du patient ?"
-              a="Le patient envoie une photo ou un PDF de son tableau de garanties. L'IA en extrait les garanties dentaires (prothèse, implant, paro, ortho) et la base de remboursement."
+              a="Le patient envoie une simple photo ou un PDF de son tableau de garanties. L'IA en extrait automatiquement les garanties dentaires (prothèse, implant, parodontie, orthodontie) ainsi que la base de remboursement."
             />
             <Faq
               q="Les estimations sont-elles contractuelles ?"
-              a="Non, elles sont indicatives et validées par le cabinet. Le remboursement définitif relève de l'Assurance Maladie et de la complémentaire."
+              a="Non, elles restent indicatives et sont toujours validées par le cabinet. Le remboursement définitif relève de l'Assurance Maladie et de la complémentaire santé."
             />
             <Faq
               q="Pourquoi 3 devis ?"
-              a="Un devis initial, un « remboursement maximal » et un « reste à charge 0 € ». Le patient compare et choisit en un coup d'œil."
+              a="Garant-AI propose un devis initial, un devis « remboursement maximal » et un devis « reste à charge 0 € ». Le patient peut ainsi comparer ses options et choisir en toute clarté."
             />
             <Faq
               q="Le patient doit-il créer un compte ?"
-              a="Non. Il reçoit un lien, dépose son tableau, c'est tout. L'analyse se fait côté cabinet."
+              a="Non, il reçoit simplement un lien et y dépose son tableau de garanties. Toute l'analyse se fait ensuite côté cabinet, sans aucune action de sa part."
             />
             <Faq
               q="Puis-je importer un devis depuis Logosw ?"
-              a="Oui, en photo/PDF ou en collant le texte : le code CCAM et le montant sont lus automatiquement. Vous vérifiez avant de générer les devis."
+              a="Oui, vous pouvez l'importer en photo, en PDF ou en collant directement le texte. Le code CCAM et le montant sont lus automatiquement, et vous vérifiez les lignes avant de générer les devis."
             />
             <Faq
               q="Les données sont-elles protégées ?"
-              a="Échanges chiffrés, données jamais revendues. Pour de vrais patients, l'hébergement doit être certifié HDS — voir la page Sécurité & HDS."
+              a="Tous les échanges sont chiffrés et vos données ne sont jamais revendues. Pour un usage avec de vrais patients, l'hébergement doit être certifié HDS, comme expliqué sur notre page Sécurité & HDS."
             />
             <Faq
               q="Combien ça coûte ?"
-              a="Abonnement mensuel par cabinet, sans engagement, dès l'offre Solo. 2 à 3 devis acceptés en plus par mois suffisent à le rentabiliser."
+              a="L'abonnement est mensuel, par cabinet et sans engagement, à partir de l'offre Solo. En général, 2 à 3 devis acceptés en plus chaque mois suffisent à le rentabiliser."
             />
             <Faq
-              q="Le paiement en plusieurs fois ?"
-              a="Le reste à charge peut être réglé en plusieurs fois via Alma / Klarna, sous réserve d'acceptation. Idéal pour les gros plans de traitement."
+              q="Le paiement en plusieurs fois, comment ça marche ?"
+              a="Le reste à charge peut être réglé en plusieurs fois via Alma ou Klarna, sous réserve de leur acceptation. C'est particulièrement utile pour débloquer les plans de traitement importants."
             />
           </div>
         </div>
