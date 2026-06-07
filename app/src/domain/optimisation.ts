@@ -237,19 +237,21 @@ function reimbForPanier(
   return { fee: v.prix, reimb: r.secu + r.mut, rac: r.rac }
 }
 
-/** Meilleur panier pour une ligne SEULE : remboursement maximal (à RAC égal, on prend le RAC le plus bas). */
+/** Du panier le plus haut de gamme au plus économique (on pousse vers le tarif LIBRE). */
+const PANIERS_DESC: Panier[] = ['libre', 'maitrise', 'rac0']
+
+/**
+ * Meilleur panier pour une ligne SEULE — POUSSE VERS LE TARIF LIBRE :
+ * on retient le panier le plus élevé disponible (libre > maîtrisé > 100 % Santé), facturé à son
+ * prix réel. La mutuelle rembourse au maximum selon le tableau ; le reste à charge est payable
+ * en plusieurs fois.
+ */
 function chooseTierMax(line: LigneDevis, garanties: GarantiesParPoste): Choice | null {
-  let best: { panier: Panier; fee: number; reimb: number; rac: number } | null = null
-  for (const p of PANIERS) {
+  for (const p of PANIERS_DESC) {
     const c = reimbForPanier(line, p, garanties)
-    if (!c) continue
-    const better =
-      !best ||
-      c.reimb > best.reimb + 0.5 ||
-      (Math.abs(c.reimb - best.reimb) <= 0.5 && c.rac < best.rac - 0.5)
-    if (better) best = { panier: p, fee: c.fee, reimb: c.reimb, rac: c.rac }
+    if (c) return { panier: p, fee: c.fee }
   }
-  return best ? { panier: best.panier, fee: best.fee } : null
+  return null
 }
 
 /** Optimise pour MAXIMISER le remboursement du patient (le RAC restant est payable en plusieurs fois). */
@@ -259,26 +261,17 @@ export function optimiserDevisMax(lines: LigneDevis[], garanties: GarantiesParPo
     isFlexible(L.acteId) ? chooseTierMax(L, garanties) : null,
   )
 
-  // Cohérence « package » par dent : panier commun maximisant le remboursement total.
+  // Cohérence « package » par dent : panier commun le plus HAUT de gamme (libre en priorité).
   for (const idxs of buildGroups(lines)) {
     const flex = idxs.filter((i) => choices[i])
     if (flex.length < 2) continue
-    const common = PANIERS.filter((p) =>
+    const bestPanier = PANIERS_DESC.find((p) =>
       flex.every((i) => variantIdxByPanier(lines[i].acteId, p) !== -1),
     )
-    if (!common.length) continue
-    let bestPanier: Panier | null = null
-    let bestReimb = -1
-    for (const p of common) {
-      const tot = flex.reduce((s, i) => s + (reimbForPanier(lines[i], p, garanties)?.reimb ?? 0), 0)
-      if (tot > bestReimb + 0.5) {
-        bestReimb = tot
-        bestPanier = p
-      }
-    }
+    if (!bestPanier) continue
     for (const i of flex) {
-      const c = reimbForPanier(lines[i], bestPanier!, garanties)!
-      choices[i] = { panier: bestPanier!, fee: c.fee }
+      const c = reimbForPanier(lines[i], bestPanier, garanties)!
+      choices[i] = { panier: bestPanier, fee: c.fee }
     }
   }
 
