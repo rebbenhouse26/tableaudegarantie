@@ -22,7 +22,7 @@ interface PatientAccount {
 import { getMutuelle } from '../domain/mutuelles'
 import { getActe } from '../domain/actes'
 import { computeDevis, eur, totaux } from '../domain/calcul'
-import { optimiserDevis } from '../domain/optimisation'
+import { optimiserDevis, optimiserDevisMax } from '../domain/optimisation'
 import './Account.css'
 
 export default function Dashboard() {
@@ -201,6 +201,7 @@ export default function Dashboard() {
       res,
       totaux: totaux(res),
       garanties: g,
+      optimisationMax: optimiserDevisMax(d.lines, g),
       optimisation: optimiserDevis(d.lines, g),
     })
   }

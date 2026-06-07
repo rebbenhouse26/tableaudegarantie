@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import GarantiesImporter from '../components/GarantiesImporter'
 import DevisImporter from '../components/DevisImporter'
 import ExpressImporter from '../components/ExpressImporter'
-import { optimiserDevis } from '../domain/optimisation'
+import { optimiserDevis, optimiserDevisMax } from '../domain/optimisation'
 import './DemoApp.css'
 import { MUTUELLES, POSTE_LABEL, getMutuelle } from '../domain/mutuelles'
 import { ACTES, getActe } from '../domain/actes'
@@ -731,6 +731,8 @@ function Step4({
   const res = useMemo(() => computeDevis(devis, garanties), [devis, garanties])
   const t = useMemo(() => totaux(res), [res])
   const optim = useMemo(() => optimiserDevis(devis, garanties), [devis, garanties])
+  // 2e optimisation : remboursement MAXIMAL (peut laisser un reste à charge, payable en plusieurs fois).
+  const optimMax = useMemo(() => optimiserDevisMax(devis, garanties), [devis, garanties])
   const dateStr = new Date().toLocaleDateString('fr-FR')
 
   const { cabinet } = useAuth()
@@ -747,6 +749,7 @@ function Step4({
       res,
       totaux: t,
       garanties,
+      optimisationMax: optimMax,
       optimisation: optim,
     })
   }
@@ -778,9 +781,11 @@ function Step4({
     <div className="card">
       <h2>4. Synthèse garanties × devis</h2>
       <p className="sub">
-        Croisement du devis et des garanties (bases CCAM). Le « devis optimisé » propose, pour chaque
-        acte, la variante qui <b>minimise le reste à charge</b> — à acte médicalement équivalent. À
-        valider par le cabinet ; l'outil n'incite jamais à dégrader un soin justifié.
+        Croisement du devis et des garanties (bases CCAM). On propose <b>3 devis</b> : le
+        <b> devis initial</b>, le <b>devis optimisé — remboursement maximal</b> (mutuelle exploitée au
+        max selon le tableau ; le reste à charge restant est <b>payable en plusieurs fois</b>), et le
+        <b> devis optimisé — reste à charge 0</b> (le patient ne paie rien). À acte médicalement
+        équivalent, à valider par le cabinet ; l'outil n'incite jamais à dégrader un soin justifié.
       </p>
 
       <div className="totbar">
@@ -1003,14 +1008,90 @@ function Step4({
         </div>
       </div>
 
+      {/* DEVIS 2 — Remboursement maximal (peut laisser un reste à charge, payable en plusieurs fois) */}
+      {(() => {
+        const res = computeDevis(optimMax.optimizedLines, garanties)
+        const to = optimMax.totalsOptim
+        return (
+          <div style={{ marginTop: 18 }} className="report report-optim">
+            <div className="rhd">
+              <h3>Devis optimisé — remboursement maximal</h3>
+              <p>Remboursement mutuelle maximisé selon le tableau · reste à charge réduit, payable en plusieurs fois</p>
+            </div>
+            <div className="rbd">
+              <table className="resp-cards">
+                <thead>
+                  <tr>
+                    <th>Acte</th>
+                    <th className="num">Prix</th>
+                    <th className="num">Part Sécu</th>
+                    <th className="num">Part mutuelle</th>
+                    <th className="num">Remb. total</th>
+                    <th className="num">À votre charge</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {optimMax.optimizedLines.map((L, i) => {
+                    const r = res[i]
+                    return (
+                      <tr key={i}>
+                        <td data-label="Acte">
+                          {optimMax.perLine[i].optimNom}
+                          {L.qty > 1 ? ` ×${L.qty}` : ''}
+                        </td>
+                        <td className="num" data-label="Prix">{eur(r.prix)}</td>
+                        <td className="num" data-label="Part Sécu">{eur(r.secu)}</td>
+                        <td className="num" data-label="Part mutuelle">{eur(r.mut)}</td>
+                        <td className="num" data-label="Remb. total" style={{ color: 'var(--green)' }}>
+                          {eur(r.secu + r.mut)}
+                        </td>
+                        <td className="num" data-label="À votre charge">
+                          <b>{eur(r.rac)}</b>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+                <tfoot>
+                  <tr style={{ borderTop: '2px solid var(--green)' }}>
+                    <td data-label=""><b>Total</b></td>
+                    <td className="num" data-label="Prix"><b>{eur(to.prix)}</b></td>
+                    <td className="num" data-label="Part Sécu"><b>{eur(to.secu)}</b></td>
+                    <td className="num" data-label="Part mutuelle"><b>{eur(to.mut)}</b></td>
+                    <td className="num" data-label="Remb. total" style={{ color: 'var(--green)' }}>
+                      <b>{eur(to.secu + to.mut)}</b>
+                    </td>
+                    <td className="num" data-label="À votre charge"><b>{eur(to.rac)}</b></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <div className="nc">
+              Remboursement mutuelle <b>maximisé</b> d'après le tableau de garanties. Le reste à charge
+              restant peut être réglé <b>en plusieurs fois</b> (ci‑dessous). À valider par le cabinet.
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* Paiement en plusieurs fois du reste à charge du devis « remboursement maximal » */}
+      {optimMax.totalsOptim.prix > 0 && (
+        <PaiementAlma
+          rac={optimMax.totalsOptim.rac}
+          total={optimMax.totalsOptim.prix}
+          patientName={patientName || undefined}
+        />
+      )}
+
+      {/* DEVIS 3 — Reste à charge 0 */}
       {(() => {
         const optimRes = computeDevis(optim.optimizedLines, garanties)
         const to = optim.totalsOptim
         return (
           <div style={{ marginTop: 18 }} className="report report-optim">
             <div className="rhd">
-              <h3>Devis optimisé — détail du reste à charge</h3>
-              <p>Honoraires ajustés au mieux des garanties · reste à charge minimisé</p>
+              <h3>Devis optimisé — reste à charge 0</h3>
+              <p>Honoraires ajustés pour un reste à charge nul pour le patient</p>
             </div>
             <div className="rbd">
               <table className="resp-cards">
@@ -1048,43 +1129,25 @@ function Step4({
                 </tbody>
                 <tfoot>
                   <tr style={{ borderTop: '2px solid var(--green)' }}>
-                    <td data-label="">
-                      <b>Total</b>
-                    </td>
-                    <td className="num" data-label="Prix">
-                      <b>{eur(to.prix)}</b>
-                    </td>
-                    <td className="num" data-label="Part Sécu">
-                      <b>{eur(to.secu)}</b>
-                    </td>
-                    <td className="num" data-label="Part mutuelle">
-                      <b>{eur(to.mut)}</b>
-                    </td>
+                    <td data-label=""><b>Total</b></td>
+                    <td className="num" data-label="Prix"><b>{eur(to.prix)}</b></td>
+                    <td className="num" data-label="Part Sécu"><b>{eur(to.secu)}</b></td>
+                    <td className="num" data-label="Part mutuelle"><b>{eur(to.mut)}</b></td>
                     <td className="num" data-label="Remb. total" style={{ color: 'var(--green)' }}>
                       <b>{eur(to.secu + to.mut)}</b>
                     </td>
-                    <td className="num" data-label="À votre charge">
-                      <b>{eur(to.rac)}</b>
-                    </td>
+                    <td className="num" data-label="À votre charge"><b>{eur(to.rac)}</b></td>
                   </tr>
                 </tfoot>
               </table>
             </div>
             <div className="nc">
-              Devis optimisé indicatif : honoraires maximisés tout en gardant un reste à charge ≈ 0,
+              Devis « zéro reste à charge » : honoraires ajustés pour que le patient ne paie rien,
               dans la limite des garanties. À valider par le cabinet.
             </div>
           </div>
         )
       })()}
-
-      {optim.totalsOptim.prix > 0 && (
-        <PaiementAlma
-          rac={optim.totalsOptim.rac}
-          total={optim.totalsOptim.prix}
-          patientName={patientName || undefined}
-        />
-      )}
 
       {saveError && (
         <div className="banner" style={{ marginTop: 16 }}>

@@ -1,6 +1,6 @@
 import type { GarantiesParPoste, LigneDevis, Panier, TotauxDevis } from './types'
 import { getActe, couronne100SanteLabel } from './actes'
-import { computeDevis, resolvePoste, totaux } from './calcul'
+import { computeDevis, computeLine, resolvePoste, totaux } from './calcul'
 
 export interface OptimLigne {
   line: LigneDevis
@@ -193,6 +193,121 @@ export function optimiserDevis(lines: LigneDevis[], garanties: GarantiesParPoste
         : ch && acte.id === 'couronne' && ch.panier === 'rac0'
           ? couronne100SanteLabel(L.dent)
           : optV.nom
+    return {
+      line: L,
+      acteLabel: acte.label,
+      currentNom: L.labelOverride ?? acte.variants[L.varianteIdx].nom,
+      currentPrix: currentRes[i].prix,
+      currentRac: currentRes[i].rac,
+      optimNom,
+      optimPrix: optimRes[i].prix,
+      optimRac: optimRes[i].rac,
+      gainCabinet: Math.round((optimRes[i].prix - currentRes[i].prix) * 100) / 100,
+    }
+  })
+
+  const totalsCurrent = totaux(currentRes)
+  const totalsOptim = totaux(optimRes)
+  return {
+    perLine,
+    optimizedLines,
+    totalsCurrent,
+    totalsOptim,
+    racEvite: Math.max(0, totalsCurrent.rac - totalsOptim.rac),
+    supplementCabinet: Math.round((totalsOptim.prix - totalsCurrent.prix) * 100) / 100,
+  }
+}
+
+/* ───────────────────────────── Optimisation « remboursement maximal » ─────────────────────────────
+ * Objectif DIFFÉRENT du RAC 0 : on cherche, pour chaque acte, l'option qui MAXIMISE le
+ * remboursement (Sécu + mutuelle) du patient d'après son tableau — quitte à laisser un reste à
+ * charge (payable en plusieurs fois). On facture le prix réel de l'option retenue.
+ */
+
+/** Remboursement (Sécu + mutuelle) et RAC d'une ligne dans un panier donné, facturée à son prix réel. */
+function reimbForPanier(
+  line: LigneDevis,
+  panier: Panier,
+  garanties: GarantiesParPoste,
+): { fee: number; reimb: number; rac: number } | null {
+  const vi = variantIdxByPanier(line.acteId, panier)
+  if (vi < 0) return null
+  const v = getActe(line.acteId)!.variants[vi]
+  const r = computeLine(line.acteId, vi, line.qty, garanties, v.prix, line.brssOverride, line.secuOverride)
+  return { fee: v.prix, reimb: r.secu + r.mut, rac: r.rac }
+}
+
+/** Meilleur panier pour une ligne SEULE : remboursement maximal (à RAC égal, on prend le RAC le plus bas). */
+function chooseTierMax(line: LigneDevis, garanties: GarantiesParPoste): Choice | null {
+  let best: { panier: Panier; fee: number; reimb: number; rac: number } | null = null
+  for (const p of PANIERS) {
+    const c = reimbForPanier(line, p, garanties)
+    if (!c) continue
+    const better =
+      !best ||
+      c.reimb > best.reimb + 0.5 ||
+      (Math.abs(c.reimb - best.reimb) <= 0.5 && c.rac < best.rac - 0.5)
+    if (better) best = { panier: p, fee: c.fee, reimb: c.reimb, rac: c.rac }
+  }
+  return best ? { panier: best.panier, fee: best.fee } : null
+}
+
+/** Optimise pour MAXIMISER le remboursement du patient (le RAC restant est payable en plusieurs fois). */
+export function optimiserDevisMax(lines: LigneDevis[], garanties: GarantiesParPoste): OptimResult {
+  const currentRes = computeDevis(lines, garanties)
+  const choices: (Choice | null)[] = lines.map((L) =>
+    isFlexible(L.acteId) ? chooseTierMax(L, garanties) : null,
+  )
+
+  // Cohérence « package » par dent : panier commun maximisant le remboursement total.
+  for (const idxs of buildGroups(lines)) {
+    const flex = idxs.filter((i) => choices[i])
+    if (flex.length < 2) continue
+    const common = PANIERS.filter((p) =>
+      flex.every((i) => variantIdxByPanier(lines[i].acteId, p) !== -1),
+    )
+    if (!common.length) continue
+    let bestPanier: Panier | null = null
+    let bestReimb = -1
+    for (const p of common) {
+      const tot = flex.reduce((s, i) => s + (reimbForPanier(lines[i], p, garanties)?.reimb ?? 0), 0)
+      if (tot > bestReimb + 0.5) {
+        bestReimb = tot
+        bestPanier = p
+      }
+    }
+    for (const i of flex) {
+      const c = reimbForPanier(lines[i], bestPanier!, garanties)!
+      choices[i] = { panier: bestPanier!, fee: c.fee }
+    }
+  }
+
+  const optimizedLines: LigneDevis[] = lines.map((L, i) => {
+    const ch = choices[i]
+    if (!ch) return L
+    return {
+      acteId: L.acteId,
+      varianteIdx: variantIdxByPanier(L.acteId, ch.panier),
+      qty: L.qty,
+      prixOverride: ch.fee,
+      brssOverride: L.brssOverride,
+      secuOverride: L.secuOverride,
+      dent: L.dent,
+    }
+  })
+  const optimRes = computeDevis(optimizedLines, garanties)
+
+  const perLine: OptimLigne[] = lines.map((L, i) => {
+    const acte = getActe(L.acteId)!
+    const optV = acte.variants[optimizedLines[i].varianteIdx]
+    const origPanier = acte.variants[L.varianteIdx].panier
+    const optimNom =
+      L.labelOverride && optimizedLines[i].varianteIdx === L.varianteIdx
+        ? L.labelOverride
+        : choices[i] && acte.id === 'couronne' && optV.panier === 'rac0'
+          ? couronne100SanteLabel(L.dent)
+          : optV.nom
+    void origPanier
     return {
       line: L,
       acteLabel: acte.label,

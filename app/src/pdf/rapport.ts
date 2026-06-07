@@ -14,7 +14,9 @@ interface RapportData {
   totaux: TotauxDevis
   /** Garanties du patient (pour recalculer le détail du devis optimisé). */
   garanties: GarantiesParPoste
-  /** Optimisation (devis optimisé), imprimée en 2e page si présente. */
+  /** Devis optimisé « remboursement maximal » (imprimé en page intermédiaire si présent). */
+  optimisationMax?: OptimResult
+  /** Devis optimisé « reste à charge 0 », imprimé en dernière page si présent. */
   optimisation?: OptimResult
 }
 
@@ -273,15 +275,16 @@ export function exportRapportPdf({
   res,
   totaux,
   garanties,
+  optimisationMax,
   optimisation,
 }: RapportData) {
   const doc = new jsPDF({ unit: 'pt', format: 'a4' })
   const dateStr = new Date().toLocaleDateString('fr-FR')
 
-  // --- Page 1 : devis proposé ---
+  // --- Page 1 : devis proposé (initial) ---
   renderDevisForm(doc, {
     title: 'DEVIS DE SOINS DENTAIRES',
-    subtitle: 'Devis proposé — plan de traitement',
+    subtitle: 'Devis initial — plan de traitement proposé',
     accent: BLUE,
     rows: buildRows(devis, res),
     totals: totaux,
@@ -291,19 +294,32 @@ export function exportRapportPdf({
     validiteStr: 'Validité : 6 mois',
   })
 
-  // --- Page 2 : devis optimisé ---
-  const hasOptim =
-    optimisation &&
-    (optimisation.supplementCabinet > 0.5 ||
-      optimisation.racEvite > 0.5 ||
-      optimisation.totalsOptim.prix !== totaux.prix)
-  if (optimisation && hasOptim) {
+  // --- Page 2 : devis optimisé — remboursement maximal ---
+  if (optimisationMax) {
+    const r = computeDevis(optimisationMax.optimizedLines, garanties)
+    const labels = optimisationMax.perLine.map((p) => p.optimNom)
+    doc.addPage()
+    renderDevisForm(doc, {
+      title: 'DEVIS DE SOINS DENTAIRES',
+      subtitle: 'Devis optimisé — remboursement maximal (reste à charge payable en plusieurs fois)',
+      accent: GREEN,
+      rows: buildRows(optimisationMax.optimizedLines, r, labels),
+      totals: optimisationMax.totalsOptim,
+      patientName,
+      sourceLabel,
+      dateStr,
+      validiteStr: 'Validité : 6 mois',
+    })
+  }
+
+  // --- Page 3 : devis optimisé — reste à charge 0 ---
+  if (optimisation) {
     const optimRes = computeDevis(optimisation.optimizedLines, garanties)
     const labels = optimisation.perLine.map((p) => p.optimNom)
     doc.addPage()
     renderDevisForm(doc, {
       title: 'DEVIS DE SOINS DENTAIRES',
-      subtitle: 'Devis optimisé — reste à charge minimisé',
+      subtitle: 'Devis optimisé — reste à charge 0',
       accent: GREEN,
       rows: buildRows(optimisation.optimizedLines, optimRes, labels),
       totals: optimisation.totalsOptim,
