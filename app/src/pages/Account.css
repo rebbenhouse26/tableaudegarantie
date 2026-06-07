@@ -86,6 +86,28 @@
   font-size: 13px;
   margin-top: 16px;
 }
+.auth-info {
+  background: var(--greenbg, #e9f8f1);
+  border: 1px solid #b7e6cf;
+  color: #1c7a52;
+  border-radius: 9px;
+  padding: 10px 12px;
+  font-size: 13px;
+  margin-top: 16px;
+  line-height: 1.45;
+}
+/* Bouton-lien (utilisé hors du tableau de bord, ex. « mot de passe oublié ») */
+.auth-card .link-btn {
+  background: none;
+  border: none;
+  color: var(--blue);
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
+.auth-card .link-btn:hover {
+  text-decoration: underline;
+}
 .auth-switch {
   text-align: center;
   font-size: 13.5px;
