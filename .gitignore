@@ -29,3 +29,6 @@ data/
 
 # CI exclu du push (token sans scope workflow)
 .github/workflows/
+
+# Deploy hook Render (secret)
+.render-deploy-hook
