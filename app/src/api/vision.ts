@@ -31,6 +31,51 @@ function fileToBase64(file: File): Promise<string> {
   })
 }
 
+/** Côté le plus long max après compression (px). Suffisant pour lire un tableau/devis. */
+const MAX_DIM = 1600
+const JPEG_QUALITY = 0.82
+
+/**
+ * Prépare le fichier pour l'envoi : COMPRESSE les images (redimensionnement + JPEG) pour accélérer
+ * fortement l'upload et l'analyse Gemini. Les PDF et HEIC (non décodables en canvas) passent tels quels.
+ * Renvoie {mimeType, dataBase64} prêt pour l'API.
+ */
+async function fileToPayload(file: File): Promise<{ mimeType: string; dataBase64: string }> {
+  const mime = guessMimeType(file)
+  const compressible = mime.startsWith('image/') && mime !== 'image/heic' && mime !== 'image/heif'
+  if (!compressible) return { mimeType: mime, dataBase64: await fileToBase64(file) }
+  try {
+    const dataUrl = await new Promise<string>((res, rej) => {
+      const r = new FileReader()
+      r.onload = () => res(String(r.result))
+      r.onerror = () => rej(new Error('read'))
+      r.readAsDataURL(file)
+    })
+    const img = await new Promise<HTMLImageElement>((res, rej) => {
+      const i = new Image()
+      i.onload = () => res(i)
+      i.onerror = () => rej(new Error('decode'))
+      i.src = dataUrl
+    })
+    const scale = Math.min(1, MAX_DIM / Math.max(img.width, img.height))
+    // Pas de gain à agrandir : si l'image est déjà petite, on l'envoie telle quelle.
+    if (scale >= 1 && file.size < 600_000) {
+      return { mimeType: mime, dataBase64: dataUrl.slice(dataUrl.indexOf(',') + 1) }
+    }
+    const canvas = document.createElement('canvas')
+    canvas.width = Math.round(img.width * scale)
+    canvas.height = Math.round(img.height * scale)
+    const ctx = canvas.getContext('2d')
+    if (!ctx) throw new Error('canvas')
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+    const out = canvas.toDataURL('image/jpeg', JPEG_QUALITY)
+    return { mimeType: 'image/jpeg', dataBase64: out.slice(out.indexOf(',') + 1) }
+  } catch {
+    // Repli : envoi de l'original si la compression échoue.
+    return { mimeType: mime, dataBase64: await fileToBase64(file) }
+  }
+}
+
 /** L'extraction par modèle de vision est-elle disponible côté serveur ? */
 export async function visionAvailable(): Promise<boolean> {
   try {
@@ -45,11 +90,11 @@ export async function visionAvailable(): Promise<boolean> {
 
 /** Extraction des garanties dentaires par modèle de vision (Gemini, côté serveur). */
 export async function extractGarantiesVision(file: File): Promise<VisionResult> {
-  const dataBase64 = await fileToBase64(file)
+  const payload = await fileToPayload(file)
   const r = await fetch(`${API_URL}/extract/garanties`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ mimeType: guessMimeType(file), dataBase64 }),
+    body: JSON.stringify(payload),
   })
   if (!r.ok) {
     const msg = (await r.json().catch(() => ({}))).error ?? 'Extraction vision indisponible.'
@@ -72,11 +117,11 @@ export interface DevisLineRaw {
 
 /** Extraction des lignes d'un devis par modèle de vision (Gemini, côté serveur). */
 export async function extractDevisVision(file: File): Promise<DevisLineRaw[]> {
-  const dataBase64 = await fileToBase64(file)
+  const payload = await fileToPayload(file)
   const r = await fetch(`${API_URL}/extract/devis`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ mimeType: guessMimeType(file), dataBase64 }),
+    body: JSON.stringify(payload),
   })
   if (!r.ok) {
     const msg = (await r.json().catch(() => ({}))).error ?? 'Extraction du devis indisponible.'
@@ -91,14 +136,14 @@ export async function extractCombined(
   garantiesFile: File,
   devisFile: File,
 ): Promise<{ garanties: VisionResult; devis: DevisLineRaw[] }> {
-  const [gB64, dB64] = await Promise.all([fileToBase64(garantiesFile), fileToBase64(devisFile)])
+  const [gPayload, dPayload] = await Promise.all([
+    fileToPayload(garantiesFile),
+    fileToPayload(devisFile),
+  ])
   const r = await fetch(`${API_URL}/extract/combined`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      garanties: { mimeType: guessMimeType(garantiesFile), dataBase64: gB64 },
-      devis: { mimeType: guessMimeType(devisFile), dataBase64: dB64 },
-    }),
+    body: JSON.stringify({ garanties: gPayload, devis: dPayload }),
   })
   if (!r.ok) {
     const msg = (await r.json().catch(() => ({}))).error ?? 'Extraction combinée indisponible.'

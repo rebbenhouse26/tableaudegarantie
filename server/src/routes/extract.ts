@@ -12,7 +12,10 @@ import { geminiExtractGaranties, geminiExtractDevis, geminiExtractCombined } fro
 export const extractRouter = Router()
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY ?? ''
+// Garanties (tables denses) : modèle complet, précision critique.
 const GEMINI_MODEL = process.env.GEMINI_MODEL ?? 'gemini-2.5-flash'
+// Devis (liste d'actes, plus simple) : modèle « lite » = aussi précis (100 % à l'éval) mais plus RAPIDE.
+const DEVIS_MODEL = process.env.GEMINI_DEVIS_MODEL ?? 'gemini-2.5-flash-lite'
 
 const bodySchema = z.object({
   mimeType: z.string(),
@@ -62,7 +65,7 @@ extractRouter.post('/devis', async (req, res) => {
   try {
     const result = await geminiExtractDevis({
       apiKey: GEMINI_API_KEY,
-      model: GEMINI_MODEL,
+      model: DEVIS_MODEL,
       mimeType: parsed.data.mimeType,
       dataBase64: parsed.data.dataBase64,
     })
