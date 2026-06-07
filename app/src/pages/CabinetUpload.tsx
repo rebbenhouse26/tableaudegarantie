@@ -3,10 +3,6 @@ import { useParams } from 'react-router-dom'
 import './Account.css'
 import GarantiesImporter from '../components/GarantiesImporter'
 import { API_URL } from '../api/client'
-import { POSTES } from '../domain/garanties'
-import { POSTE_LABEL } from '../domain/mutuelles'
-import { eur } from '../domain/calcul'
-import type { GarantiesParPoste } from '../domain/types'
 
 /** Page publique générique : lien PERMANENT du cabinet (le même pour tous les patients). */
 export default function CabinetUpload() {
@@ -14,9 +10,6 @@ export default function CabinetUpload() {
   const [cabinetName, setCabinetName] = useState<string | null>(null)
   const [loadErr, setLoadErr] = useState<string | null>(null)
   const [name, setName] = useState('')
-  const [garanties, setGaranties] = useState<GarantiesParPoste | null>(null)
-  const [sourceName, setSourceName] = useState('')
-  const [rawText, setRawText] = useState('')
   const [doc, setDoc] = useState<{ dataUrl: string; name: string; mime: string } | null>(null)
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
@@ -33,14 +26,14 @@ export default function CabinetUpload() {
   }, [slug])
 
   async function handleSend() {
-    if (!garanties || !name.trim()) return
+    if (!doc || !name.trim()) return
     setSendErr(null)
     setSending(true)
     try {
       const r = await fetch(`${API_URL}/public/cabinet/${slug}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ patientName: name.trim(), garanties, sourceName, rawText, doc: doc ?? undefined }),
+        body: JSON.stringify({ patientName: name.trim(), doc }),
       })
       if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error ?? 'Envoi impossible.')
       setSent(true)
@@ -79,11 +72,11 @@ export default function CabinetUpload() {
             </>
           ) : (
             <>
-              <h1>Transmettez vos garanties</h1>
+              <h1>Transmettez votre tableau de garanties</h1>
               <p className="sub">
                 <b>{cabinetName}</b> vous invite à transmettre votre tableau de garanties mutuelle
-                avant votre rendez-vous. Importez une photo ou un PDF : l'analyse est automatique et
-                sera vérifiée par le cabinet.
+                avant votre rendez-vous. Importez simplement une <b>photo</b> ou un <b>PDF</b> : il
+                sera transmis à votre cabinet, qui s'occupe du reste.
               </p>
 
               <label htmlFor="pname">Votre nom et prénom</label>
@@ -95,44 +88,15 @@ export default function CabinetUpload() {
               />
 
               <div style={{ marginTop: 18 }}>
-                <GarantiesImporter
-                  onResult={(g, src, raw) => {
-                    setGaranties(g)
-                    setSourceName(src)
-                    setRawText(raw)
-                  }}
-                  onFile={setDoc}
-                />
+                <GarantiesImporter fileOnly onFile={setDoc} />
               </div>
-
-              {garanties && (
-                <div style={{ marginTop: 16 }}>
-                  <label>Garanties détectées (le cabinet les vérifiera)</label>
-                  <ul style={{ margin: '6px 0 0', paddingLeft: 18, fontSize: 13.5, color: 'var(--muted)' }}>
-                    {POSTES.map((p) => {
-                      const g = garanties[p]
-                      const v =
-                        g.val === 0
-                          ? 'non détecté'
-                          : g.type === 'pct'
-                            ? `${g.val} % BR`
-                            : eur(g.val)
-                      return (
-                        <li key={p}>
-                          {POSTE_LABEL[p]} : <b style={{ color: 'var(--ink)' }}>{v}</b>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-              )}
 
               {sendErr && <div className="auth-err">{sendErr}</div>}
 
               <button
                 className="btn"
                 style={{ width: '100%', marginTop: 22 }}
-                disabled={!garanties || !name.trim() || sending}
+                disabled={!doc || !name.trim() || sending}
                 onClick={handleSend}
               >
                 {sending ? 'Envoi…' : 'Transmettre à mon cabinet'}

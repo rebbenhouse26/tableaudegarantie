@@ -12,7 +12,8 @@ const garantieSchema = z.object({
 })
 
 const submitSchema = z.object({
-  garanties: z.record(z.string(), garantieSchema),
+  // Garanties optionnelles : côté patient on transmet surtout le FICHIER (pas d'analyse).
+  garanties: z.record(z.string(), garantieSchema).optional(),
   sourceName: z.string().optional().default(''),
   rawText: z.string().optional().default(''),
   patientName: z.string().optional(),
@@ -55,6 +56,10 @@ publicInviteRouter.post('/:token', (req, res) => {
   const parsed = submitSchema.safeParse(req.body)
   if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message })
   const { garanties, sourceName, rawText, patientName, doc } = parsed.data
+  if ((!garanties || !Object.keys(garanties).length) && !doc?.dataUrl) {
+    return res.status(400).json({ error: 'Veuillez joindre votre tableau de garanties.' })
+  }
+  const garantiesJson = garanties && Object.keys(garanties).length ? JSON.stringify(garanties) : null
 
   db.prepare(
     `UPDATE patient_requests
@@ -64,7 +69,7 @@ publicInviteRouter.post('/:token', (req, res) => {
          received_at = datetime('now')
      WHERE token = ?`,
   ).run(
-    JSON.stringify(garanties), sourceName, rawText, patientName ?? '',
+    garantiesJson, sourceName, rawText, patientName ?? '',
     doc?.dataUrl ?? null, doc?.mime ?? null, doc?.name ?? null, req.params.token,
   )
 

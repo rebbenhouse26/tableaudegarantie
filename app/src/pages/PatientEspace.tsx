@@ -3,10 +3,6 @@ import { Link, useParams } from 'react-router-dom'
 import './Account.css'
 import GarantiesImporter from '../components/GarantiesImporter'
 import { API_URL } from '../api/client'
-import { POSTES } from '../domain/garanties'
-import { POSTE_LABEL } from '../domain/mutuelles'
-import { eur } from '../domain/calcul'
-import type { GarantiesParPoste } from '../domain/types'
 
 interface Me {
   name: string
@@ -17,9 +13,6 @@ export default function PatientEspace() {
   const { token } = useParams<{ token: string }>()
   const [me, setMe] = useState<Me | null>(null)
   const [loadErr, setLoadErr] = useState<string | null>(null)
-  const [garanties, setGaranties] = useState<GarantiesParPoste | null>(null)
-  const [sourceName, setSourceName] = useState('')
-  const [rawText, setRawText] = useState('')
   const [doc, setDoc] = useState<{ dataUrl: string; name: string; mime: string } | null>(null)
   const [consent, setConsent] = useState(false)
   const [sending, setSending] = useState(false)
@@ -40,14 +33,14 @@ export default function PatientEspace() {
   }, [token])
 
   async function handleSend() {
-    if (!garanties) return
+    if (!doc) return
     setSendErr(null)
     setSending(true)
     try {
       const r = await fetch(`${API_URL}/patient/me/${token}/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ garanties, sourceName, rawText, doc: doc ?? undefined }),
+        body: JSON.stringify({ doc }),
       })
       if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error ?? 'Envoi impossible.')
       setSent(true)
@@ -94,7 +87,7 @@ export default function PatientEspace() {
                 style={{ width: '100%', marginTop: 16 }}
                 onClick={() => {
                   setSent(false)
-                  setGaranties(null)
+                  setDoc(null)
                 }}
               >
                 Déposer un nouveau tableau
@@ -104,42 +97,13 @@ export default function PatientEspace() {
             <>
               <h1>{me.name ? `Bonjour ${me.name}` : 'Votre espace patient'}</h1>
               <p className="sub">
-                Importez votre tableau de garanties mutuelle (photo ou PDF) : l'analyse est
-                automatique et restera vérifiée par votre cabinet dentaire.
+                Importez simplement une <b>photo</b> ou un <b>PDF</b> de votre tableau de garanties
+                mutuelle : il sera transmis à votre cabinet dentaire, qui s'occupe du reste.
               </p>
 
               <div style={{ marginTop: 18 }}>
-                <GarantiesImporter
-                  onResult={(g, src, raw) => {
-                    setGaranties(g)
-                    setSourceName(src)
-                    setRawText(raw)
-                  }}
-                  onFile={setDoc}
-                />
+                <GarantiesImporter fileOnly onFile={setDoc} />
               </div>
-
-              {garanties && (
-                <div style={{ marginTop: 16 }}>
-                  <label>Garanties détectées (le cabinet les vérifiera)</label>
-                  <ul style={{ margin: '6px 0 0', paddingLeft: 18, fontSize: 13.5, color: 'var(--muted)' }}>
-                    {POSTES.map((p) => {
-                      const g = garanties[p]
-                      const v =
-                        g.val === 0
-                          ? 'non détecté'
-                          : g.type === 'pct'
-                            ? `${g.val} % BR`
-                            : eur(g.val)
-                      return (
-                        <li key={p}>
-                          {POSTE_LABEL[p]} : <b style={{ color: 'var(--ink)' }}>{v}</b>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-              )}
 
               {sendErr && <div className="auth-err">{sendErr}</div>}
 
@@ -166,10 +130,10 @@ export default function PatientEspace() {
               <button
                 className="btn"
                 style={{ width: '100%', marginTop: 14 }}
-                disabled={!garanties || sending || !consent}
+                disabled={!doc || sending || !consent}
                 onClick={handleSend}
               >
-                {sending ? 'Envoi…' : 'Enregistrer mes garanties'}
+                {sending ? 'Envoi…' : 'Transmettre à mon cabinet'}
               </button>
               <p className="sub" style={{ fontSize: 12, marginTop: 12 }}>
                 Aucune donnée n'est partagée avec des tiers. Estimation non contractuelle, vérifiée

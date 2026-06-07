@@ -3,10 +3,6 @@ import { useParams } from 'react-router-dom'
 import './Account.css'
 import GarantiesImporter from '../components/GarantiesImporter'
 import { API_URL } from '../api/client'
-import { POSTES } from '../domain/garanties'
-import { POSTE_LABEL } from '../domain/mutuelles'
-import { eur } from '../domain/calcul'
-import type { GarantiesParPoste } from '../domain/types'
 
 interface Invite {
   cabinetName: string
@@ -19,9 +15,6 @@ export default function PatientUpload() {
   const [invite, setInvite] = useState<Invite | null>(null)
   const [loadErr, setLoadErr] = useState<string | null>(null)
   const [name, setName] = useState('')
-  const [garanties, setGaranties] = useState<GarantiesParPoste | null>(null)
-  const [sourceName, setSourceName] = useState('')
-  const [rawText, setRawText] = useState('')
   const [doc, setDoc] = useState<{ dataUrl: string; name: string; mime: string } | null>(null)
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
@@ -42,14 +35,14 @@ export default function PatientUpload() {
   }, [token])
 
   async function handleSend() {
-    if (!garanties) return
+    if (!doc) return
     setSendErr(null)
     setSending(true)
     try {
       const r = await fetch(`${API_URL}/public/invite/${token}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ garanties, sourceName, rawText, patientName: name, doc: doc ?? undefined }),
+        body: JSON.stringify({ patientName: name, doc }),
       })
       if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error ?? 'Envoi impossible.')
       setSent(true)
@@ -88,55 +81,26 @@ export default function PatientUpload() {
             </>
           ) : (
             <>
-              <h1>Transmettez vos garanties</h1>
+              <h1>Transmettez votre tableau de garanties</h1>
               <p className="sub">
                 <b>{invite.cabinetName}</b> vous invite à transmettre votre tableau de garanties
-                mutuelle avant votre rendez-vous. Importez une photo ou un PDF : l'analyse est
-                automatique et restera vérifiée par le cabinet.
+                mutuelle avant votre rendez-vous. Importez simplement une <b>photo</b> ou un
+                <b> PDF</b> : il sera transmis à votre cabinet, qui s'occupe du reste.
               </p>
 
               <label htmlFor="pname">Votre nom</label>
               <input id="pname" value={name} onChange={(e) => setName(e.target.value)} />
 
               <div style={{ marginTop: 18 }}>
-                <GarantiesImporter
-                  onResult={(g, src, raw) => {
-                    setGaranties(g)
-                    setSourceName(src)
-                    setRawText(raw)
-                  }}
-                  onFile={setDoc}
-                />
+                <GarantiesImporter fileOnly onFile={setDoc} />
               </div>
-
-              {garanties && (
-                <div style={{ marginTop: 16 }}>
-                  <label>Garanties détectées (le cabinet les vérifiera)</label>
-                  <ul style={{ margin: '6px 0 0', paddingLeft: 18, fontSize: 13.5, color: 'var(--muted)' }}>
-                    {POSTES.map((p) => {
-                      const g = garanties[p]
-                      const v =
-                        g.val === 0
-                          ? 'non détecté'
-                          : g.type === 'pct'
-                            ? `${g.val} % BR`
-                            : eur(g.val)
-                      return (
-                        <li key={p}>
-                          {POSTE_LABEL[p]} : <b style={{ color: 'var(--ink)' }}>{v}</b>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-              )}
 
               {sendErr && <div className="auth-err">{sendErr}</div>}
 
               <button
                 className="btn"
                 style={{ width: '100%', marginTop: 22 }}
-                disabled={!garanties || sending}
+                disabled={!doc || sending}
                 onClick={handleSend}
               >
                 {sending ? 'Envoi…' : 'Transmettre à mon cabinet'}

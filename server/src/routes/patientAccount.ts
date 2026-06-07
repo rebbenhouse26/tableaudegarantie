@@ -36,7 +36,7 @@ const garantieSchema = z.object({
   plafond: z.number(),
 })
 const submitSchema = z.object({
-  garanties: z.record(z.string(), garantieSchema),
+  garanties: z.record(z.string(), garantieSchema).optional(),
   sourceName: z.string().optional().default(''),
   rawText: z.string().optional().default(''),
   doc: z
@@ -146,11 +146,15 @@ patientAccountRouter.post('/me/:token/submit', (req, res) => {
   const parsed = submitSchema.safeParse(req.body)
   if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message })
   const { garanties, sourceName, rawText, doc } = parsed.data
+  if ((!garanties || !Object.keys(garanties).length) && !doc?.dataUrl) {
+    return res.status(400).json({ error: 'Veuillez joindre votre tableau de garanties.' })
+  }
+  const garantiesJson = garanties && Object.keys(garanties).length ? JSON.stringify(garanties) : null
   db.prepare(
     `UPDATE patients SET status = 'received', garanties = ?, source_name = ?, raw_text = ?,
        doc_data = ?, doc_mime = ?, doc_name = ?, submitted_at = datetime('now') WHERE token = ?`,
   ).run(
-    JSON.stringify(garanties),
+    garantiesJson,
     sourceName,
     rawText,
     doc?.dataUrl ?? null,

@@ -22,7 +22,8 @@ const docSchema = z
 
 const submitSchema = z.object({
   patientName: z.string().trim().min(1, 'Nom du patient requis.'),
-  garanties: z.record(z.string(), garantieSchema),
+  // Garanties optionnelles : côté patient on transmet surtout le FICHIER (pas d'analyse).
+  garanties: z.record(z.string(), garantieSchema).optional(),
   sourceName: z.string().optional().default(''),
   rawText: z.string().optional().default(''),
   phone: z.string().optional().default(''),
@@ -50,6 +51,10 @@ publicCabinetRouter.post('/:slug', (req, res) => {
   const parsed = submitSchema.safeParse(req.body)
   if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message })
   const { patientName, garanties, sourceName, rawText, phone, doc } = parsed.data
+  if ((!garanties || !Object.keys(garanties).length) && !doc?.dataUrl) {
+    return res.status(400).json({ error: 'Veuillez joindre votre tableau de garanties.' })
+  }
+  const garantiesJson = garanties && Object.keys(garanties).length ? JSON.stringify(garanties) : null
 
   const token = randomBytes(18).toString('base64url')
   db.prepare(
@@ -58,7 +63,7 @@ publicCabinetRouter.post('/:slug', (req, res) => {
         doc_data, doc_mime, doc_name, received_at)
      VALUES (?, ?, ?, 'received', ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
   ).run(
-    cab.id, token, patientName, sourceName, JSON.stringify(garanties), rawText, phone,
+    cab.id, token, patientName, sourceName, garantiesJson, rawText, phone,
     doc?.dataUrl ?? null, doc?.mime ?? null, doc?.name ?? null,
   )
 

@@ -8,9 +8,11 @@ import { ApiError } from '../api/client'
 
 interface Props {
   /** Appelé une fois la formule choisie (et à chaque changement de formule). */
-  onResult: (garanties: GarantiesParPoste, sourceName: string, rawText: string) => void
+  onResult?: (garanties: GarantiesParPoste, sourceName: string, rawText: string) => void
   /** Appelé avec le fichier d'origine (data URL) dès sa sélection — pour stockage/téléchargement. */
   onFile?: (file: { dataUrl: string; name: string; mime: string }) => void
+  /** Mode « fichier seul » : pas d'analyse IA, on se contente de capter le fichier à envoyer. */
+  fileOnly?: boolean
 }
 
 function readAsDataUrl(file: File): Promise<string> {
@@ -35,7 +37,7 @@ function visionErrorMessage(e: unknown): string {
 }
 
 /** Téléversement d'un tableau de garanties (photo/PDF) → extraction par IA + choix de la formule. */
-export default function GarantiesImporter({ onResult, onFile }: Props) {
+export default function GarantiesImporter({ onResult, onFile, fileOnly }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
   const [fileName, setFileName] = useState('')
   const [busy, setBusy] = useState(false)
@@ -43,19 +45,26 @@ export default function GarantiesImporter({ onResult, onFile }: Props) {
   const [visionCols, setVisionCols] = useState<VisionColumn[] | null>(null)
   const [col, setCol] = useState(-1) // -1 = formule pas encore choisie
   const [showHelp, setShowHelp] = useState(false)
+  const [ready, setReady] = useState(false) // mode fileOnly : fichier prêt à envoyer
 
   async function handleFile(file: File) {
     setError(null)
     setVisionCols(null)
     setCol(-1)
+    setReady(false)
     setFileName(file.name)
-    setBusy(true)
-    // Capte le fichier d'origine (pour téléchargement côté cabinet), sans bloquer l'analyse.
+    // Capte le fichier d'origine (pour envoi / téléchargement côté cabinet).
     if (onFile) {
       readAsDataUrl(file)
         .then((dataUrl) => onFile({ dataUrl, name: file.name, mime: file.type }))
         .catch(() => {})
     }
+    // Mode « fichier seul » (côté patient) : pas d'analyse IA, on s'arrête là.
+    if (fileOnly) {
+      setReady(true)
+      return
+    }
+    setBusy(true)
     try {
       const vis = await extractGarantiesVision(file)
       if (!vis?.columns?.length) throw new Error('Aucune garantie détectée')
@@ -63,13 +72,13 @@ export default function GarantiesImporter({ onResult, onFile }: Props) {
       if (vis.columns.length === 1) {
         // Une seule formule : on l'applique directement.
         setCol(0)
-        onResult(visionColumnToGaranties(vis.columns[0]), `Document analysé — ${file.name}`, '')
+        onResult?.(visionColumnToGaranties(vis.columns[0]), `Document analysé — ${file.name}`, '')
       }
       // Plusieurs formules : on attend le choix de l'utilisateur (col reste -1, rien n'est appliqué).
     } catch (e) {
       console.error(e)
       setError(visionErrorMessage(e))
-      onResult(emptyGaranties(), `Document — ${file.name}`, '')
+      onResult?.(emptyGaranties(), `Document — ${file.name}`, '')
     } finally {
       setBusy(false)
     }
@@ -78,7 +87,7 @@ export default function GarantiesImporter({ onResult, onFile }: Props) {
   function chooseColumn(i: number) {
     if (!visionCols || i < 0) return
     setCol(i)
-    onResult(visionColumnToGaranties(visionCols[i]), `Document analysé — ${fileName}`, '')
+    onResult?.(visionColumnToGaranties(visionCols[i]), `Document analysé — ${fileName}`, '')
   }
 
   return (
@@ -105,6 +114,12 @@ export default function GarantiesImporter({ onResult, onFile }: Props) {
           <p>{fileName || 'JPG, PNG ou PDF — votre tableau de garanties'}</p>
         </div>
       </button>
+
+      {fileOnly && ready && (
+        <p className="gi-msg" style={{ color: 'var(--green)', fontWeight: 600 }}>
+          ✓ Fichier sélectionné : {fileName} — prêt à être envoyé à votre cabinet.
+        </p>
+      )}
 
       {/* Aide patient : qu'est-ce qu'un tableau de garanties + où le trouver + exemple */}
       <button
