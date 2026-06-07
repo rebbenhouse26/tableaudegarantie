@@ -60,14 +60,15 @@ export default function LandingPage() {
       {/* HERO */}
       <header className="hero">
         <div className="container">
-          <p className="eyebrow">SaaS pour cabinets dentaires</p>
+          <p className="eyebrow">Acceptation des devis dentaires</p>
           <h1>
-            Estimez le <span>reste à charge</span> de vos patients avant le rendez-vous.
+            Faites <span>accepter plus de devis</span> en montrant son reste à charge à chaque
+            patient.
           </h1>
           <p className="lead">
-            Tableau de Garanti lit les garanties mutuelle de vos patients, estime leur
-            remboursement et clarifie leur reste à charge — pour des plans de traitement mieux
-            compris et mieux acceptés.
+            Tableau de Garanti lit la mutuelle du patient et génère <b>3 devis clairs</b> — dont un à
+            <b> 0 € de reste à charge</b> et un <b>premium payable en plusieurs fois</b>. Le patient
+            comprend, compare et signe — souvent dès le rendez‑vous.
           </p>
           <div className="hero-cta">
             <Link className="btn lg" to="/app">
@@ -92,13 +93,13 @@ export default function LandingPage() {
           </div>
           <div className="reassure">
             <span>
-              <span className="tick">✓</span> Estimation claire et rapide
+              <span className="tick">✓</span> Plus de devis acceptés
             </span>
             <span>
-              <span className="tick">✓</span> Validation par le cabinet
+              <span className="tick">✓</span> Reste à charge clair en minutes
             </span>
             <span>
-              <span className="tick">✓</span> Conforme RGPD · hébergement HDS
+              <span className="tick">✓</span> Paiement en plusieurs fois
             </span>
           </div>
         </div>
@@ -362,12 +363,13 @@ export default function LandingPage() {
               <p><a href="#fonctionnement">Fonctionnement</a></p>
               <p><a href="#tarifs">Tarifs</a></p>
               <p><Link to="/app">Démo interactive</Link></p>
+              <p><Link to="/guide">Guide d'utilisation</Link></p>
             </div>
             <div>
               <h4>Conformité</h4>
+              <p><Link to="/securite">RGPD &amp; hébergement HDS</Link></p>
               <p><Link to="/confidentialite">Politique de confidentialité</Link></p>
               <p><Link to="/cgu">CGU</Link></p>
-              <p><Link to="/confidentialite">RGPD &amp; hébergement HDS</Link></p>
               <p><Link to="/mentions-legales">Mentions légales</Link></p>
             </div>
           </div>

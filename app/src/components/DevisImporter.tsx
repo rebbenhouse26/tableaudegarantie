@@ -24,6 +24,30 @@ export default function DevisImporter({ onResult }: Props) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [count, setCount] = useState<number | null>(null)
+  const [pasteOpen, setPasteOpen] = useState(false)
+  const [pasteText, setPasteText] = useState('')
+
+  function handlePaste() {
+    setError(null)
+    setCount(null)
+    void (async () => {
+      try {
+        const { parseDevisText, rawLinesToDevis } = await import('../domain/devisOcr')
+        const raw = parseDevisText(pasteText)
+        const lines = rawLinesToDevis(raw)
+        onResult(lines, pasteText)
+        setCount(lines.length)
+        setFileName('Devis collé (texte)')
+        if (lines.length === 0) {
+          setError("Aucun acte n'a pu être reconnu dans le texte collé. Ajoutez les actes manuellement ci-dessous.")
+        }
+      } catch (e) {
+        console.error(e)
+        setError('Lecture du texte impossible. Ajoutez les actes manuellement ci-dessous.')
+        onResult([], '')
+      }
+    })()
+  }
 
   async function handleFile(file: File) {
     setError(null)
@@ -72,6 +96,48 @@ export default function DevisImporter({ onResult }: Props) {
           <p>{fileName || 'JPG, PNG ou PDF — le devis du cabinet'}</p>
         </div>
       </button>
+
+      <div style={{ marginTop: 8, fontSize: 13 }}>
+        <button
+          type="button"
+          onClick={() => setPasteOpen((v) => !v)}
+          style={{ background: 'none', border: 'none', color: 'var(--blue)', cursor: 'pointer', fontWeight: 600, padding: 0 }}
+        >
+          {pasteOpen ? '▾' : '▸'} Ou coller le devis en texte (depuis Logosw, Word…)
+        </button>
+      </div>
+
+      {pasteOpen && (
+        <div style={{ marginTop: 10 }}>
+          <textarea
+            value={pasteText}
+            onChange={(e) => setPasteText(e.target.value)}
+            rows={6}
+            placeholder={'Collez ici les lignes du devis, une par ligne.\nEx :  HBLD634  Couronne céramo-métallique  26  500,00'}
+            style={{
+              width: '100%',
+              borderRadius: 10,
+              border: '1px solid var(--line)',
+              padding: 10,
+              font: 'inherit',
+              fontSize: 13,
+              resize: 'vertical',
+            }}
+          />
+          <button
+            type="button"
+            className="btn"
+            style={{ marginTop: 8 }}
+            disabled={pasteText.trim().length < 5}
+            onClick={handlePaste}
+          >
+            Lire le texte collé
+          </button>
+          <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6 }}>
+            Lecture automatique du code CCAM et du montant (le plus élevé de la ligne = honoraires). Vérifiez et corrigez ci-dessous.
+          </p>
+        </div>
+      )}
 
       {busy && (
         <div className="gi-progress">

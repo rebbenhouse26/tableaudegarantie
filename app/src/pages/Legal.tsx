@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom'
 import './Account.css'
 
-type Page = 'mentions' | 'confidentialite' | 'cgu'
+type Page = 'mentions' | 'confidentialite' | 'cgu' | 'securite'
 
 const TITLES: Record<Page, string> = {
   mentions: 'Mentions légales',
   confidentialite: 'Politique de confidentialité',
   cgu: "Conditions générales d'utilisation",
+  securite: 'Sécurité, RGPD & hébergement HDS',
 }
 
 /**
@@ -84,7 +85,67 @@ export default function Legal({ page }: { page: Page }) {
             </div>
           )}
 
+          {page === 'securite' && (
+            <div className="legal">
+              <p>
+                Tableau de Garanti traite des <b>données de santé</b> (tableaux de garanties et devis
+                dentaires). Ces données relèvent de la catégorie particulière de l'article 9 du RGPD et,
+                en France, doivent être hébergées chez un <b>Hébergeur de Données de Santé (HDS) certifié</b>.
+                Voici comment nous nous y conformons.
+              </p>
+              <h3>1. Hébergement certifié HDS</h3>
+              <p>
+                Les données sont hébergées en Union européenne chez un hébergeur <b>certifié HDS</b> :
+                [nom de l'hébergeur], certificat HDS n° [référence]. Le contrat d'hébergement précise les
+                conditions de sécurité, de réversibilité et de localisation des données.
+              </p>
+              <h3>2. Données collectées et finalité</h3>
+              <p>
+                Nous collectons uniquement ce qui est nécessaire à l'estimation du reste à charge : nom du
+                patient, e-mail de contact, tableau de garanties et devis. <b>Aucune donnée n'est revendue</b>
+                ni utilisée à des fins publicitaires.
+              </p>
+              <h3>3. Chiffrement</h3>
+              <p>
+                Échanges chiffrés en transit (HTTPS/TLS). Les fichiers (tableaux, devis) sont stockés sur un
+                volume dédié et supprimés à l'issue de la durée de conservation. [Préciser le chiffrement au
+                repos selon l'hébergeur.]
+              </p>
+              <h3>4. Consentement du patient</h3>
+              <p>
+                Le patient consent explicitement au traitement de ses données de santé avant tout envoi
+                (case à cocher). Il peut retirer son consentement et demander la suppression à tout moment.
+              </p>
+              <h3>5. Sous-traitants encadrés (DPA)</h3>
+              <p>
+                Lecture par IA, envoi d'e-mails/SMS ([Brevo]) et paiement en plusieurs fois ([Alma]/[Klarna])
+                font chacun l'objet d'un accord de traitement (DPA). La liste à jour est disponible sur demande.
+              </p>
+              <h3>6. Durée de conservation</h3>
+              <p>
+                Tableaux et devis : [12] mois après le dernier devis, puis suppression automatique. Le cabinet
+                peut supprimer une demande patient à tout moment depuis son espace.
+              </p>
+              <h3>7. Vos droits</h3>
+              <p>
+                Accès, rectification, effacement, opposition et portabilité : [contact@domaine.fr].
+                Réclamation possible auprès de la <b>CNIL</b>. DPO : [nom / e-mail].
+              </p>
+              <h3>8. Limite de l'estimation</h3>
+              <p>
+                Les montants affichés sont <b>indicatifs</b> et doivent être vérifiés par le cabinet. Le
+                remboursement définitif relève de l'Assurance Maladie et de la complémentaire santé.
+              </p>
+              <p className="sub" style={{ marginTop: 14, fontSize: 12.5 }}>
+                Cette page décrit notre démarche de conformité ; elle ne constitue pas un conseil juridique.
+                Faire valider mentions et certificat HDS par un juriste / DPO avant mise en production.
+              </p>
+            </div>
+          )}
+
           <p className="sub" style={{ marginTop: 22 }}>
+            <Link to="/securite" style={{ color: 'var(--blue)' }}>Sécurité &amp; HDS</Link>
+            {' · '}
             <Link to="/mentions-legales" style={{ color: 'var(--blue)' }}>Mentions légales</Link>
             {' · '}
             <Link to="/confidentialite" style={{ color: 'var(--blue)' }}>Confidentialité</Link>

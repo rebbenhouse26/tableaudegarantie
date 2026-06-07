@@ -12,6 +12,7 @@ import CabinetUpload from './pages/CabinetUpload'
 import PatientRegister from './pages/PatientRegister'
 import PatientEspace from './pages/PatientEspace'
 import Legal from './pages/Legal'
+import Guide from './pages/Guide'
 import ResetPassword from './pages/ResetPassword'
 
 const router = createBrowserRouter(
@@ -28,6 +29,8 @@ const router = createBrowserRouter(
     { path: '/mentions-legales', element: <Legal page="mentions" /> },
     { path: '/confidentialite', element: <Legal page="confidentialite" /> },
     { path: '/cgu', element: <Legal page="cgu" /> },
+    { path: '/securite', element: <Legal page="securite" /> },
+    { path: '/guide', element: <Guide /> },
   ],
   {
     future: {

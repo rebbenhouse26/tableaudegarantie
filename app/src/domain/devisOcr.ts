@@ -1,6 +1,50 @@
 import { matchActe, nearestVariant, getActe, DEFAULT_ACTE_BY_CAT, panierForCode, labelForCode } from './actes'
-import { ccamFind, ccamPoste } from './ccam'
+import { ccamFind, ccamLabel, ccamPoste } from './ccam'
 import type { LigneDevis, Panier } from './types'
+
+export interface RawDevisLine {
+  label: string
+  code?: string
+  cat?: string
+  dent?: string
+  prix: number
+  brss?: number
+  secu?: number
+  qty?: number
+}
+
+/**
+ * Parse un devis COLLÉ EN TEXTE (copié depuis Logosw ou un autre logiciel) en lignes brutes.
+ * Heuristique (à revérifier par le cabinet) : par ligne, on repère le code CCAM, les montants
+ * (on prend le PLUS ÉLEVÉ comme honoraires), un éventuel n° de dent, et le libellé.
+ */
+export function parseDevisText(text: string): RawDevisLine[] {
+  const out: RawDevisLine[] = []
+  for (const rawLine of text.split(/\r?\n/)) {
+    const line = rawLine.trim()
+    if (line.length < 3) continue
+    const codeM = line.toUpperCase().match(/[A-Z]{4}\d{3}/)
+    const code = codeM ? codeM[0] : undefined
+    // Montants : nombres avec décimales optionnelles, éventuel « € ». On retient le plus grand.
+    const amounts: number[] = []
+    for (const m of line.matchAll(/(\d[\d  ]{0,6}(?:[.,]\d{1,2})?)\s*(€|eur)?/gi)) {
+      const n = parseFloat(m[1].replace(/[  ]/g, '').replace(',', '.'))
+      if (Number.isFinite(n)) amounts.push(n)
+    }
+    const prix = amounts.length ? Math.max(...amounts) : 0
+    // Une ligne d'acte = a un code CCAM OU un montant ≥ 20 €.
+    if (!code && prix < 20) continue
+    if (!(prix > 0)) continue
+    // Dent : un nombre FDI (11-48) présent mais différent du prix.
+    const dentM = line.match(/\b([1-4][1-8])\b/g)?.find((d) => Number(d) !== Math.round(prix))
+    // Libellé : la ligne sans le code ni les gros montants.
+    let label = line.replace(codeM?.[0] ?? '', '')
+    label = label.replace(/\d[\d  ]*(?:[.,]\d{1,2})?\s*(?:€|eur)?/gi, ' ').replace(/\s{2,}/g, ' ').trim()
+    if (!label && code) label = ccamLabel(code) ?? code
+    out.push({ label: (label || code || 'Acte').slice(0, 90), code, dent: dentM, prix, qty: 1 })
+  }
+  return out
+}
 
 /**
  * Normalise le panier lu sur le devis vers 'rac0' | 'maitrise' | 'libre' (ou null).
