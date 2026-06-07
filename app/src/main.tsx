@@ -12,12 +12,14 @@ import CabinetUpload from './pages/CabinetUpload'
 import PatientRegister from './pages/PatientRegister'
 import PatientEspace from './pages/PatientEspace'
 import Legal from './pages/Legal'
+import ResetPassword from './pages/ResetPassword'
 
 const router = createBrowserRouter(
   [
     { path: '/', element: <LandingPage /> },
     { path: '/app', element: <DemoApp /> },
     { path: '/connexion', element: <Login /> },
+    { path: '/reinitialiser-mot-de-passe/:token', element: <ResetPassword /> },
     { path: '/cabinet', element: <Dashboard /> },
     { path: '/patient/:token', element: <PatientUpload /> },
     { path: '/c/:slug', element: <CabinetUpload /> },

@@ -13,12 +13,14 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
+  const [devLink, setDevLink] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 
   function switchMode(m: 'login' | 'register' | 'forgot') {
     setMode(m)
     setError(null)
     setInfo(null)
+    setDevLink(null)
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -28,17 +30,19 @@ export default function Login() {
     setBusy(true)
     try {
       if (mode === 'forgot') {
-        const r = await api.post<{ ok: boolean; emailed: boolean; newPassword?: string }>(
+        setDevLink(null)
+        const r = await api.post<{ ok: boolean; emailed: boolean; link?: string }>(
           '/auth/forgot-password',
           { email },
         )
         if (r.emailed) {
-          setInfo(`Si un compte existe pour ${email}, un nouveau mot de passe vient d'être envoyé par e-mail. Pensez à vérifier vos spams.`)
-        } else if (r.newPassword) {
-          // E-mail non configuré (dev) : on affiche le nouveau mot de passe pour rester testable.
-          setInfo(`Nouveau mot de passe : ${r.newPassword}  (l'envoi par e-mail n'est pas activé sur cette instance)`)
+          setInfo(`Si un compte existe pour ${email}, un lien de réinitialisation vient d'être envoyé par e-mail (valable 1 h). Pensez à vérifier vos spams.`)
+        } else if (r.link) {
+          // E-mail non configuré (dev) : on affiche le lien pour rester testable.
+          setInfo("L'envoi par e-mail n'est pas encore activé — voici votre lien de réinitialisation :")
+          setDevLink(r.link)
         } else {
-          setInfo(`Si un compte existe pour ${email}, un nouveau mot de passe a été envoyé par e-mail.`)
+          setInfo(`Si un compte existe pour ${email}, un lien de réinitialisation a été envoyé par e-mail.`)
         }
         return
       }
@@ -135,6 +139,14 @@ export default function Login() {
             {info && (
               <div className="auth-info">
                 ✅ {info}
+                {devLink && (
+                  <>
+                    {' '}
+                    <a href={devLink} style={{ color: 'var(--blue)', wordBreak: 'break-all', fontWeight: 600 }}>
+                      Ouvrir le lien de réinitialisation
+                    </a>
+                  </>
+                )}
               </div>
             )}
 
