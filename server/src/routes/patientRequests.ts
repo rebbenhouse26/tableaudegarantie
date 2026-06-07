@@ -20,6 +20,8 @@ interface PreqRow {
   garanties: string | null
   raw_text: string | null
   phone: string | null
+  doc_mime: string | null
+  doc_name: string | null
   created_at: string
   received_at: string | null
 }
@@ -34,6 +36,8 @@ function rowToPreq(r: PreqRow) {
     phone: r.phone ?? '',
     garanties: r.garanties ? JSON.parse(r.garanties) : null,
     rawText: r.raw_text ?? '',
+    hasDoc: !!r.doc_name || !!r.doc_mime,
+    docName: r.doc_name ?? '',
     createdAt: r.created_at,
     receivedAt: r.received_at,
   }
@@ -103,6 +107,21 @@ patientRequestsRouter.delete('/:id', (req: AuthRequest, res) => {
     .run(req.params.id, req.cabinet!.id)
   if (info.changes === 0) return res.status(404).json({ error: 'Invitation introuvable.' })
   res.status(204).end()
+})
+
+/** Télécharge le document original déposé via le lien permanent / une invitation. */
+patientRequestsRouter.get('/:id/document', (req: AuthRequest, res) => {
+  const row = db
+    .prepare('SELECT doc_data, doc_mime, doc_name FROM patient_requests WHERE id = ? AND cabinet_id = ?')
+    .get(req.params.id, req.cabinet!.id) as
+    | { doc_data: string | null; doc_mime: string | null; doc_name: string | null }
+    | undefined
+  if (!row || !row.doc_data) return res.status(404).json({ error: 'Document introuvable.' })
+  const b64 = row.doc_data.includes(',') ? row.doc_data.slice(row.doc_data.indexOf(',') + 1) : row.doc_data
+  const buf = Buffer.from(b64, 'base64')
+  res.setHeader('Content-Type', row.doc_mime || 'application/octet-stream')
+  res.setHeader('Content-Disposition', `attachment; filename="${(row.doc_name || `tableau-${req.params.id}`).replace(/"/g, '')}"`)
+  res.send(buf)
 })
 
 /* ---------- Patients rattachés (espace patient self-service) ---------- */

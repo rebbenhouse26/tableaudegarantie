@@ -55,6 +55,9 @@ export interface PatientRequest {
   phone?: string
   garanties: GarantiesParPoste | null
   rawText: string
+  /** Le patient a joint le fichier original de son tableau (téléchargeable par le cabinet). */
+  hasDoc?: boolean
+  docName?: string
   createdAt: string
   receivedAt: string | null
   /** Présent uniquement dans la réponse de création (statut de l'envoi SMS). */

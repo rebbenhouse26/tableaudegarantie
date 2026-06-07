@@ -78,6 +78,27 @@ export default function Dashboard() {
     }
   }
 
+  /** Télécharge le document joint d'une demande (lien permanent / invitation). */
+  async function downloadInviteDoc(inv: PatientRequest) {
+    try {
+      const r = await fetch(`${API_URL}/patient-requests/${inv.id}/document`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      })
+      if (!r.ok) throw new Error('Téléchargement impossible.')
+      const blob = await r.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = inv.docName || `tableau-garanties-${inv.patientName || inv.id}`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Téléchargement impossible.')
+    }
+  }
+
   /** Construit un devis à partir des garanties déposées par un patient. */
   function buildFromPatient(p: PatientAccount) {
     if (!p.garanties) return
@@ -432,6 +453,15 @@ export default function Dashboard() {
                     )}
                   </td>
                   <td className="num">
+                    {inv.hasDoc && (
+                      <button
+                        className="btn ghost"
+                        style={{ padding: '5px 10px', fontSize: 13, marginRight: 8 }}
+                        onClick={() => downloadInviteDoc(inv)}
+                      >
+                        ⬇ Télécharger
+                      </button>
+                    )}
                     {inv.status === 'received' && (
                       <button
                         className="btn"

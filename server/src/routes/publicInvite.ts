@@ -16,6 +16,9 @@ const submitSchema = z.object({
   sourceName: z.string().optional().default(''),
   rawText: z.string().optional().default(''),
   patientName: z.string().optional(),
+  doc: z
+    .object({ dataUrl: z.string(), name: z.string().optional().default(''), mime: z.string().optional().default('') })
+    .optional(),
 })
 
 interface Row {
@@ -51,15 +54,19 @@ publicInviteRouter.post('/:token', (req, res) => {
 
   const parsed = submitSchema.safeParse(req.body)
   if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message })
-  const { garanties, sourceName, rawText, patientName } = parsed.data
+  const { garanties, sourceName, rawText, patientName, doc } = parsed.data
 
   db.prepare(
     `UPDATE patient_requests
      SET status = 'received', garanties = ?, source_name = ?, raw_text = ?,
          patient_name = COALESCE(NULLIF(?, ''), patient_name),
+         doc_data = ?, doc_mime = ?, doc_name = ?,
          received_at = datetime('now')
      WHERE token = ?`,
-  ).run(JSON.stringify(garanties), sourceName, rawText, patientName ?? '', req.params.token)
+  ).run(
+    JSON.stringify(garanties), sourceName, rawText, patientName ?? '',
+    doc?.dataUrl ?? null, doc?.mime ?? null, doc?.name ?? null, req.params.token,
+  )
 
   res.json({ ok: true })
 })

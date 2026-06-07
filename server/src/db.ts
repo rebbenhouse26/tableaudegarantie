@@ -93,6 +93,10 @@ function addColumn(table: string, def: string) {
 addColumn('cabinets', 'public_slug TEXT')
 // Téléphone patient (base pour un futur envoi SMS/WhatsApp du lien).
 addColumn('patient_requests', 'phone TEXT')
+// Document original déposé par le patient (pour téléchargement par le cabinet).
+addColumn('patient_requests', 'doc_data TEXT')
+addColumn('patient_requests', 'doc_mime TEXT')
+addColumn('patient_requests', 'doc_name TEXT')
 // Réinitialisation de mot de passe cabinet (lien à durée limitée).
 addColumn('cabinets', 'reset_token TEXT')
 addColumn('cabinets', 'reset_expires TEXT')

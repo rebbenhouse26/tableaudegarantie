@@ -22,6 +22,7 @@ export default function PatientUpload() {
   const [garanties, setGaranties] = useState<GarantiesParPoste | null>(null)
   const [sourceName, setSourceName] = useState('')
   const [rawText, setRawText] = useState('')
+  const [doc, setDoc] = useState<{ dataUrl: string; name: string; mime: string } | null>(null)
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [sendErr, setSendErr] = useState<string | null>(null)
@@ -48,7 +49,7 @@ export default function PatientUpload() {
       const r = await fetch(`${API_URL}/public/invite/${token}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ garanties, sourceName, rawText, patientName: name }),
+        body: JSON.stringify({ garanties, sourceName, rawText, patientName: name, doc: doc ?? undefined }),
       })
       if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error ?? 'Envoi impossible.')
       setSent(true)
@@ -104,6 +105,7 @@ export default function PatientUpload() {
                     setSourceName(src)
                     setRawText(raw)
                   }}
+                  onFile={setDoc}
                 />
               </div>
 
