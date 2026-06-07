@@ -1,0 +1,98 @@
+:root {
+  --blue: #1f6fb2;
+  --dark: #16435f;
+  --light: #e8f1f8;
+  --grey: #f5f7fa;
+  --green: #1f9d6b;
+  --greenbg: #e6f6ef;
+  --amber: #c77700;
+  --red: #c0392b;
+  --ink: #1f2b33;
+  --muted: #5b6b78;
+  --line: #e4eaf0;
+  --white: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  color: var(--ink);
+  line-height: 1.6;
+  background: #fff;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 22px;
+}
+
+/* ---- Boutons partagés ---- */
+.btn {
+  display: inline-block;
+  font: inherit;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 22px;
+  cursor: pointer;
+  background: var(--blue);
+  color: #fff;
+  font-size: 15px;
+  transition: 0.15s;
+}
+.btn:hover {
+  background: #195d96;
+  transform: translateY(-1px);
+}
+.btn:disabled {
+  background: #b7c4ce;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn.lg {
+  padding: 15px 30px;
+  font-size: 16px;
+}
+.btn.ghost {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--dark);
+}
+.btn.ghost:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: #fff;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-weight: 800;
+  color: var(--dark);
+}
+.logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--dark), var(--blue));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}

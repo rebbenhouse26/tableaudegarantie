@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau de Garanti — Démo MVP</title>
+<style>
+  :root{
+    --blue:#1f6fb2; --dark:#16435f; --light:#e8f1f8; --grey:#f2f4f6;
+    --green:#1f9d6b; --greenbg:#e6f6ef; --amber:#c77700; --red:#c0392b;
+    --ink:#1f2b33; --muted:#637381; --line:#e2e8ee; --white:#fff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);background:#f6f8fb;line-height:1.5}
+  header{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:22px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:40px;height:40px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--blue);font-size:20px}
+  .brand h1{font-size:19px;margin:0}
+  .brand p{margin:0;font-size:12.5px;opacity:.85}
+  .demo-tag{font-size:11px;background:rgba(255,255,255,.18);padding:5px 10px;border-radius:20px;letter-spacing:.5px}
+  .wrap{max-width:1020px;margin:0 auto;padding:24px 18px 60px}
+  .banner{background:#fff7e6;border:1px solid #f1d29a;color:#7a5200;border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:20px;display:flex;gap:9px;align-items:flex-start}
+  .banner b{color:#5e4000}
+  .steps{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+  .step{flex:1;min-width:140px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;position:relative;opacity:.55;transition:.2s}
+  .step.active{opacity:1;border-color:var(--blue);box-shadow:0 4px 14px rgba(31,111,178,.12)}
+  .step.done{opacity:1;border-color:var(--green)}
+  .step .n{width:24px;height:24px;border-radius:50%;background:var(--grey);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;margin-bottom:6px}
+  .step.active .n{background:var(--blue);color:#fff}
+  .step.done .n{background:var(--green);color:#fff}
+  .step h3{margin:0;font-size:13.5px}
+  .step p{margin:2px 0 0;font-size:11.5px;color:var(--muted)}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:18px;box-shadow:0 1px 3px rgba(16,35,55,.04)}
+  .card h2{margin:0 0 4px;font-size:18px;color:var(--dark)}
+  .card .sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+  .panel-hidden{display:none}
+  label{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
+  select,input{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:9px;width:100%;background:#fff}
+  .mut-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:6px}
+  .mut{border:1px solid var(--line);border-radius:11px;padding:14px;cursor:pointer;transition:.15s;background:#fff}
+  .mut:hover{border-color:var(--blue)}
+  .mut.sel{border-color:var(--blue);background:var(--light);box-shadow:0 0 0 2px rgba(31,111,178,.18)}
+  .mut h4{margin:0 0 2px;font-size:14.5px}
+  .mut .lvl{font-size:11px;color:var(--muted)}
+  .mut ul{margin:8px 0 0;padding-left:16px;font-size:11.5px;color:var(--muted)}
+  .btn{font:inherit;font-weight:600;border:none;border-radius:9px;padding:11px 20px;cursor:pointer;background:var(--blue);color:#fff;transition:.15s}
+  .btn:hover{background:#195d96}
+  .btn:disabled{background:#b7c4ce;cursor:not-allowed}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .btn.ghost:hover{border-color:var(--blue);color:var(--blue)}
+  .btn-row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+  th{font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .gline td input{padding:6px 8px;font-size:12.5px}
+  .add-row{display:grid;grid-template-columns:2fr 1.4fr 70px auto;gap:10px;align-items:end;margin-top:6px}
+  .pill{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--greenbg);color:var(--green)}
+  .pill.std{background:var(--light);color:var(--blue)}
+  .pill.free{background:#fdecea;color:var(--red)}
+  .devis-empty{color:var(--muted);font-size:13px;font-style:italic;padding:14px 0}
+  .totbar{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}
+  .tot{flex:1;min-width:150px;background:var(--grey);border-radius:11px;padding:14px}
+  .tot .lab{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+  .tot .val{font-size:23px;font-weight:800;margin-top:3px}
+  .tot.rac{background:var(--dark);color:#fff}
+  .tot.rac .lab{color:#bcd4e6}
+  .tot.secu .val{color:var(--blue)}
+  .tot.mut .val{color:var(--green)}
+  .scn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
+  .scn{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .scn .hd{padding:11px 14px;font-weight:700;font-size:14px;color:#fff}
+  .scn.eco .hd{background:var(--green)} .scn.mid .hd{background:var(--blue)} .scn.opt .hd{background:var(--dark)}
+  .scn .bd{padding:13px 14px;font-size:12.5px}
+  .scn .bd .r{display:flex;justify-content:space-between;padding:3px 0}
+  .scn .bd .r.big{border-top:1px solid var(--line);margin-top:6px;padding-top:8px;font-weight:800;font-size:15px}
+  .scn .desc{font-size:11.5px;color:var(--muted);margin:0 0 8px}
+  .report{border:2px solid var(--blue);border-radius:14px;padding:0;overflow:hidden}
+  .report .rhd{background:var(--blue);color:#fff;padding:16px 22px}
+  .report .rhd h3{margin:0;font-size:17px}
+  .report .rhd p{margin:2px 0 0;font-size:12px;opacity:.9}
+  .report .rbd{padding:18px 22px}
+  .nc{font-size:11.5px;color:#7a5200;background:#fff7e6;border-top:1px solid #f1d29a;padding:10px 22px}
+  @media(max-width:640px){.scn-grid{grid-template-columns:1fr}.add-row{grid-template-columns:1fr 1fr}}
+  @media print{header,.steps,.banner,.btn-row,.demo-tag{display:none}.card{box-shadow:none;border:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">TG</div>
+    <div><h1>Tableau de Garanti</h1><p>Le copilote financier du devis dentaire</p></div>
+  </div>
+  <div class="demo-tag">DÉMO — données fictives</div>
+</header>
+
+<div class="wrap">
+  <div class="banner">
+    <span>⚠️</span>
+    <div><b>Estimation non contractuelle.</b> Cette démonstration utilise des mutuelles et des montants <b>fictifs</b> à des fins d'illustration. Les remboursements réels dépendent du contrat du patient et doivent être confirmés par le cabinet et la mutuelle.</div>
+  </div>
+
+  <div class="steps">
+    <div class="step active" id="s1"><span class="n">1</span><h3>Garanties patient</h3><p>Le patient transmet sa mutuelle</p></div>
+    <div class="step" id="s2"><span class="n">2</span><h3>Extraction</h3><p>Lecture des garanties dentaires</p></div>
+    <div class="step" id="s3"><span class="n">3</span><h3>Plan de traitement</h3><p>Actes envisagés par le cabinet</p></div>
+    <div class="step" id="s4"><span class="n">4</span><h3>Rapport patient</h3><p>Reste à charge estimé</p></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="card" id="panel1">
+    <h2>1. Le patient transmet ses garanties</h2>
+    <p class="sub">Avant le rendez-vous, le patient reçoit un lien et envoie son tableau de garanties (photo, PDF ou capture). Pour la démo, sélectionnez une mutuelle fictive — l'application simule alors l'extraction automatique.</p>
+    <div class="mut-grid" id="mutGrid"></div>
+    <div class="btn-row">
+      <button class="btn" id="toExtract" disabled>Analyser les garanties →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card panel-hidden" id="panel2">
+    <h2>2. Garanties dentaires extraites</h2>
+    <p class="sub">Lecture automatique (simulée) du tableau. Le cabinet peut corriger une ligne avant calcul — c'est la <b>vérification humaine</b>. Les garanties sont exprimées en % de la base de remboursement Sécu (BRSS) ou en forfait annuel.</p>
+    <table>
+      <thead><tr><th>Poste</th><th>Type de garantie</th><th class="num">Niveau</th><th class="num">Plafond annuel</th></tr></thead>
+      <tbody id="garTable"></tbody>
+    </table>
+    <p class="sub" style="margin-top:10px">Mutuelle détectée : <b id="mutName"></b></p>
+    <div class="btn-row">
+      <button class="btn ghost" onclick="goStep(1)">← Retour</button>
+      <button class="btn" onclick="goStep(3)">Construire le plan de traitement →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="card panel-hidden" id="panel3">
+    <h2>3. Plan de traitement envisagé</h2>
+    <p class="sub">Le cabinet ajoute les actes médicalement indiqués. Pour les actes prothétiques, choisissez la variante (panier 100 % Santé, tarif maîtrisé ou tarif libre). L'estimation se met à jour en direct.</p>
+    <div class="add-row">
+      <div><label>Acte</label><select id="actSel"></select></div>
+      <div><label>Variante</label><select id="varSel"></select></div>
+      <div><label>Qté</label><input type="number" id="qty" value="1" min="1" max="32"></div>
+      <div><button class="btn" onclick="addAct()">+ Ajouter</button></div>
+    </div>
+    <table style="margin-top:16px">
+      <thead><tr><th>Acte</th><th class="num">Prix cabinet</th><th class="num">Sécu</th><th class="num">Mutuelle</th><th class="num">Reste à charge</th><th></th></tr></thead>
+      <tbody id="devisTable"><tr><td colspan="6" class="devis-empty">Aucun acte ajouté pour l'instant.</td></tr></tbody>
+    </table>
+    <div class="totbar" id="totbar"></div>
+    <div class="btn-row">
+      <button class="btn ghost" onclick="goStep(2)">← Retour</button>
+      <button class="btn" id="toReport" onclick="goStep(4)" disabled>Générer le rapport patient →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="card panel-hidden" id="panel4">
+    <h2>4. Rapport patient</h2>
+    <p class="sub">Document clair remis au patient après validation du cabinet. Comparaison de trois niveaux de prise en charge pour l'aider à décider.</p>
+
+    <div class="scn-grid" id="scnGrid"></div>
+
+    <div style="margin-top:22px" class="report">
+      <div class="rhd">
+        <h3>Estimation de votre reste à charge</h3>
+        <p id="reportSub"></p>
+      </div>
+      <div class="rbd">
+        <table>
+          <thead><tr><th>Acte proposé</th><th class="num">Prix</th><th class="num">Remb. estimé</th><th class="num">À votre charge</th></tr></thead>
+          <tbody id="reportTable"></tbody>
+          <tfoot id="reportFoot"></tfoot>
+        </table>
+      </div>
+      <div class="nc">Estimation non contractuelle établie à partir des garanties transmises. Le remboursement définitif relève de votre mutuelle et de l'Assurance Maladie. Document validé par le cabinet.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn ghost" onclick="goStep(3)">← Modifier le plan</button>
+      <button class="btn" onclick="window.print()">Imprimer / PDF</button>
+    </div>
+  </div>
+
+  <p style="text-align:center;color:var(--muted);font-size:11.5px;margin-top:30px">Démonstration — Tableau de Garanti · Le copilote financier du devis dentaire</p>
+</div>
+
+<script>
+// ---------- Données fictives ----------
+// Mutuelles : garanties par poste. type "pct" = % de la BRSS (inclut la part Sécu) ; type "forfait" = € / an.
+const MUTUELLES = {
+  essentielle:{ name:"Mutuelle Essentielle", lvl:"Entrée de gamme",
+    g:{ prothese:{type:"pct",val:125,plafond:600}, implant:{type:"forfait",val:0,plafond:0},
+        paro:{type:"forfait",val:0,plafond:0}, ortho:{type:"forfait",val:150,plafond:300},
+        esthetique:{type:"forfait",val:0,plafond:0} },
+    desc:["Prothèse 125 % BRSS","Implant non couvert","Paro non couverte"] },
+  confort:{ name:"Mutuelle Confort", lvl:"Intermédiaire",
+    g:{ prothese:{type:"pct",val:200,plafond:1000}, implant:{type:"forfait",val:400,plafond:800},
+        paro:{type:"forfait",val:150,plafond:150}, ortho:{type:"forfait",val:250,plafond:500},
+        esthetique:{type:"forfait",val:0,plafond:0} },
+    desc:["Prothèse 200 % BRSS","Implant 400 €/dent","Paro 150 €/an"] },
+  premium:{ name:"Mutuelle Premium", lvl:"Haut de gamme",
+    g:{ prothese:{type:"pct",val:400,plafond:2000}, implant:{type:"forfait",val:700,plafond:2100},
+        paro:{type:"forfait",val:300,plafond:300}, ortho:{type:"forfait",val:400,plafond:800},
+        esthetique:{type:"forfait",val:200,plafond:400} },
+    desc:["Prothèse 400 % BRSS","Implant 700 €/dent","Paro & esthétique incluses"] }
+};
+
+// Catalogue d'actes. brss = base remb. Sécu, tauxSecu = % pris en charge par la Sécu (0 si non remboursable).
+// cat = poste de garantie. panier : "rac0" (100% santé) / "maitrise" / "libre" / null
+const ACTES = {
+  couronne:{ label:"Couronne", cat:"prothese", variants:[
+    {nom:"Couronne métallique (panier 100 % Santé)", prix:290, brss:120, tauxSecu:60, panier:"rac0"},
+    {nom:"Couronne céramo-métallique (tarif maîtrisé)", prix:500, brss:120, tauxSecu:60, panier:"maitrise"},
+    {nom:"Couronne zircone (tarif libre)", prix:650, brss:120, tauxSecu:60, panier:"libre"} ]},
+  inlaycore:{ label:"Inlay-core", cat:"prothese", variants:[
+    {nom:"Inlay-core", prix:175, brss:90, tauxSecu:60, panier:"maitrise"} ]},
+  bridge:{ label:"Bridge 3 éléments", cat:"prothese", variants:[
+    {nom:"Bridge full zircone (panier 100 % Santé)", prix:1359, brss:279.5, tauxSecu:60, panier:"rac0"},
+    {nom:"Bridge céramo-métallique (tarif libre)", prix:1700, brss:279.5, tauxSecu:60, panier:"libre"} ]},
+  implant:{ label:"Implant", cat:"implant", variants:[
+    {nom:"Implant + pilier (non remboursé Sécu)", prix:1100, brss:0, tauxSecu:0, panier:"libre"} ]},
+  couronneImpl:{ label:"Couronne sur implant", cat:"prothese", variants:[
+    {nom:"Couronne sur implant", prix:700, brss:120, tauxSecu:60, panier:"libre"} ]},
+  surfacage:{ label:"Surfaçage paro (par sextant)", cat:"paro", variants:[
+    {nom:"Surfaçage radiculaire (hors nomenclature)", prix:120, brss:0, tauxSecu:0, panier:"libre"} ]},
+  ortho:{ label:"Orthodontie (semestre)", cat:"ortho", variants:[
+    {nom:"Semestre, adulte (hors nomenclature)", prix:850, brss:0, tauxSecu:0, panier:"libre"},
+    {nom:"Semestre, enfant <16 ans", prix:850, brss:193.5, tauxSecu:100, panier:"maitrise"} ]},
+  blanchiment:{ label:"Esthétique", cat:"esthetique", variants:[
+    {nom:"Blanchiment", prix:400, brss:0, tauxSecu:0, panier:"libre"},
+    {nom:"Facette céramique", prix:900, brss:0, tauxSecu:0, panier:"libre"} ]}
+};
+
+const CAT_LABEL={prothese:"Prothèse",implant:"Implantologie",paro:"Parodontologie",ortho:"Orthodontie",esthetique:"Esthétique"};
+const eur=n=>n.toLocaleString('fr-FR',{minimumFractionDigits:0,maximumFractionDigits:0})+" €";
+
+let state={mut:null, devis:[]};
+
+// ---------- Étape 1 : mutuelles ----------
+function renderMutuelles(){
+  const grid=document.getElementById('mutGrid');
+  grid.innerHTML='';
+  Object.entries(MUTUELLES).forEach(([k,m])=>{
+    const d=document.createElement('div');
+    d.className='mut'+(state.mut===k?' sel':'');
+    d.onclick=()=>{state.mut=k;renderMutuelles();document.getElementById('toExtract').disabled=false;};
+    d.innerHTML=`<h4>${m.name}</h4><div class="lvl">${m.lvl}</div><ul>${m.desc.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    grid.appendChild(d);
+  });
+}
+
+// ---------- Étape 2 : garanties extraites ----------
+function renderGaranties(){
+  const m=MUTUELLES[state.mut];
+  document.getElementById('mutName').textContent=m.name;
+  const tb=document.getElementById('garTable');tb.innerHTML='';
+  Object.entries(m.g).forEach(([cat,g])=>{
+    const niveau = g.type==='pct' ? `${g.val} % BRSS` : (g.val>0?`${g.val} €`:'—');
+    const plaf = g.plafond>0 ? eur(g.plafond) : '—';
+    const tr=document.createElement('tr');tr.className='gline';
+    tr.innerHTML=`<td><b>${CAT_LABEL[cat]}</b></td>
+      <td>${g.type==='pct'?'% de la base Sécu':'Forfait annuel'}</td>
+      <td class="num"><input value="${niveau}" data-cat="${cat}" data-f="niveau" style="text-align:right"></td>
+      <td class="num"><input value="${plaf}" data-cat="${cat}" data-f="plaf" style="text-align:right"></td>`;
+    tb.appendChild(tr);
+  });
+}
+
+// ---------- Étape 3 : devis ----------
+function fillActSelect(){
+  const a=document.getElementById('actSel');a.innerHTML='';
+  Object.entries(ACTES).forEach(([k,act])=>{a.innerHTML+=`<option value="${k}">${act.label}</option>`;});
+  fillVarSelect();
+}
+function fillVarSelect(){
+  const k=document.getElementById('actSel').value;const v=document.getElementById('varSel');v.innerHTML='';
+  ACTES[k].variants.forEach((vr,i)=>{v.innerHTML+=`<option value="${i}">${vr.nom} — ${eur(vr.prix)}</option>`;});
+}
+function addAct(){
+  const k=document.getElementById('actSel').value;
+  const vi=+document.getElementById('varSel').value;
+  const qty=Math.max(1,+document.getElementById('qty').value||1);
+  state.devis.push({k,vi,qty});
+  renderDevis();
+}
+function removeAct(i){state.devis.splice(i,1);renderDevis();}
+
+// Coeur du calcul : pour un acte + garanties mutuelle -> {prix, secu, mut, rac}
+function computeLine(actKey, varIdx, qty, garanties){
+  const act=ACTES[actKey]; const v=act.variants[varIdx]; const g=garanties[act.cat];
+  const prix=v.prix*qty;
+  const secu=(v.brss * v.tauxSecu/100)*qty;
+  let mut=0;
+  if(g){
+    if(g.type==='pct'){
+      // prise en charge totale plafonnée à val% de la BRSS ; la mutuelle complète au-delà de la Sécu
+      const totalCouvert=(v.brss * g.val/100)*qty;
+      mut=Math.max(0, totalCouvert - secu);
+    } else { // forfait €
+      mut=g.val*qty;
+    }
+  }
+  // jamais plus que le reste après Sécu
+  mut=Math.min(mut, Math.max(0, prix-secu));
+  return {prix, secu, mut, rac:Math.max(0, prix-secu-mut), cat:act.cat};
+}
+
+// applique les plafonds annuels par poste sur l'ensemble du devis
+function computeDevis(lines, mutKey){
+  const g=MUTUELLES[mutKey].g; const used={};
+  return lines.map(L=>{
+    const r=computeLine(L.k,L.vi,L.qty,g);
+    const cat=r.cat; const plaf=g[cat]?g[cat].plafond:0;
+    if(plaf>0){
+      used[cat]=used[cat]||0;
+      const dispo=Math.max(0,plaf-used[cat]);
+      const before=r.mut;
+      r.mut=Math.min(r.mut,dispo);
+      r.rac=r.rac+(before-r.mut);
+      used[cat]+=r.mut;
+    }
+    return r;
+  });
+}
+
+function renderDevis(){
+  const tb=document.getElementById('devisTable');tb.innerHTML='';
+  if(!state.devis.length){tb.innerHTML='<tr><td colspan="6" class="devis-empty">Aucun acte ajouté pour l\'instant.</td></tr>';}
+  const res=computeDevis(state.devis,state.mut);
+  let tp=0,ts=0,tm=0,tr=0;
+  state.devis.forEach((L,i)=>{
+    const act=ACTES[L.k];const v=act.variants[L.vi];const r=res[i];
+    tp+=r.prix;ts+=r.secu;tm+=r.mut;tr+=r.rac;
+    const pill = v.panier==='rac0'?'<span class="pill">100 % Santé</span>':v.panier==='maitrise'?'<span class="pill std">Tarif maîtrisé</span>':'<span class="pill free">Tarif libre</span>';
+    const row=document.createElement('tr');
+    row.innerHTML=`<td>${v.nom}${L.qty>1?` ×${L.qty}`:''}<br>${pill}</td>
+      <td class="num">${eur(r.prix)}</td><td class="num">${eur(r.secu)}</td>
+      <td class="num" style="color:var(--green)">${eur(r.mut)}</td>
+      <td class="num"><b>${eur(r.rac)}</b></td>
+      <td class="num"><button class="btn ghost" style="padding:4px 9px;font-size:12px" onclick="removeAct(${i})">✕</button></td>`;
+    tb.appendChild(row);
+  });
+  document.getElementById('totbar').innerHTML = !state.devis.length ? '' :
+    `<div class="tot"><div class="lab">Total cabinet</div><div class="val">${eur(tp)}</div></div>
+     <div class="tot secu"><div class="lab">Sécurité sociale</div><div class="val">${eur(ts)}</div></div>
+     <div class="tot mut"><div class="lab">Mutuelle (est.)</div><div class="val">${eur(tm)}</div></div>
+     <div class="tot rac"><div class="lab">Reste à charge</div><div class="val">${eur(tr)}</div></div>`;
+  document.getElementById('toReport').disabled = !state.devis.length;
+  state._tot={tp,ts,tm,tr};
+}
+
+// ---------- Étape 4 : rapport + scénarios ----------
+function buildScenarios(){
+  // 3 scénarios sur un cas "remplacer une dent" pour illustrer le choix, indépendant du devis libre
+  const cases={
+    eco:{title:"Solution économique",desc:"Privilégie le panier 100 % Santé (reste à charge minimal).",lines:[{k:'couronne',vi:0,qty:1}]},
+    mid:{title:"Solution intermédiaire",desc:"Couronne céramo-métallique, bon compromis esthétique/prix.",lines:[{k:'couronne',vi:1,qty:1},{k:'inlaycore',vi:0,qty:1}]},
+    opt:{title:"Solution optimale",desc:"Implant + couronne sur implant (référence biologique).",lines:[{k:'implant',vi:0,qty:1},{k:'couronneImpl',vi:0,qty:1}]}
+  };
+  return cases;
+}
+function scenarioTotals(lines){
+  const res=computeDevis(lines,state.mut);
+  return res.reduce((a,r)=>({p:a.p+r.prix,s:a.s+r.secu,m:a.m+r.mut,rac:a.rac+r.rac}),{p:0,s:0,m:0,rac:0});
+}
+function renderReport(){
+  const m=MUTUELLES[state.mut];
+  document.getElementById('reportSub').textContent=`${m.name} — ${m.lvl} · établi le ${new Date().toLocaleDateString('fr-FR')}`;
+  // tableau récap du devis réel
+  const res=computeDevis(state.devis,state.mut);
+  const tb=document.getElementById('reportTable');tb.innerHTML='';
+  state.devis.forEach((L,i)=>{
+    const v=ACTES[L.k].variants[L.vi];const r=res[i];
+    tb.innerHTML+=`<tr><td>${v.nom}${L.qty>1?` ×${L.qty}`:''}</td><td class="num">${eur(r.prix)}</td>
+      <td class="num" style="color:var(--green)">${eur(r.secu+r.mut)}</td><td class="num"><b>${eur(r.rac)}</b></td></tr>`;
+  });
+  const t=state._tot;
+  document.getElementById('reportFoot').innerHTML=
+    `<tr style="border-top:2px solid var(--blue)"><td><b>Total</b></td><td class="num"><b>${eur(t.tp)}</b></td>
+     <td class="num" style="color:var(--green)"><b>${eur(t.ts+t.tm)}</b></td><td class="num"><b>${eur(t.tr)}</b></td></tr>`;
+  // scénarios comparatifs
+  const sc=buildScenarios();const grid=document.getElementById('scnGrid');grid.innerHTML='';
+  [['eco','eco'],['mid','mid'],['opt','opt']].forEach(([key,cls])=>{
+    const c=sc[key];const tot=scenarioTotals(c.lines);
+    grid.innerHTML+=`<div class="scn ${cls}"><div class="hd">${c.title}</div><div class="bd">
+      <p class="desc">${c.desc}</p>
+      <div class="r"><span>Prix cabinet</span><span>${eur(tot.p)}</span></div>
+      <div class="r"><span>Remb. estimé</span><span style="color:var(--green)">${eur(tot.s+tot.m)}</span></div>
+      <div class="r big"><span>Reste à charge</span><span>${eur(tot.rac)}</span></div>
+    </div></div>`;
+  });
+}
+
+// ---------- Navigation ----------
+function goStep(n){
+  for(let i=1;i<=4;i++){
+    document.getElementById('panel'+i).classList.toggle('panel-hidden',i!==n);
+    const s=document.getElementById('s'+i);
+    s.classList.toggle('active',i===n);s.classList.toggle('done',i<n);
+  }
+  if(n===2)renderGaranties();
+  if(n===3){renderDevis();}
+  if(n===4)renderReport();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// init
+renderMutuelles();
+fillActSelect();
+document.getElementById('toExtract').onclick=()=>goStep(2);
+document.getElementById('actSel').onchange=fillVarSelect;
+</script>
+</body>
+</html>

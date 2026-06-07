@@ -1,0 +1,19 @@
+# Ne jamais copier les dépendances de l'hôte (better-sqlite3 est compilé pour macOS,
+# l'image Linux recompile via npm ci) ni les artefacts/données locales.
+**/node_modules
+**/dist
+**/.vite
+server/data
+**/*.db
+**/*.db-journal
+**/*.db-wal
+**/*.db-shm
+.git
+.env
+**/.env
+**/.env.local
+.DS_Store
+**/.DS_Store
+# Documents source / fixtures non nécessaires à l'image
+*.docx
+*.html

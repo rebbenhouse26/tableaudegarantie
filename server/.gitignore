@@ -1,0 +1,9 @@
+node_modules
+*.local
+.DS_Store
+data/
+*.db
+*.db-journal
+.env
+eval/images/*
+!eval/images/.gitkeep

@@ -1,0 +1,69 @@
+{
+  "cases": [
+    {
+      "file": "ribe-couronne-implant.png",
+      "source": "Cabinet Ribe — couronne sur implant (13)",
+      "expected": [
+        { "code": "HBLD418", "cat": "prothese", "dent": "13", "prix": 650.0, "panier": "" },
+        { "code": "HBLD012", "cat": "prothese", "dent": "13", "prix": 400.0, "panier": "" }
+      ]
+    },
+    {
+      "file": "ribe-pta-novalocs.png",
+      "source": "Cabinet Ribe — prothèse amovible sur 4 Novalocs",
+      "expected": [
+        { "code": "LBLD193", "cat": "implant", "dent": "12 14 22 24", "prix": 2800.0, "panier": "" },
+        { "code": "HBLD031", "cat": "prothese", "dent": "haut", "prix": 1100.0, "panier": "rac0" },
+        { "code": "LBQP001", "cat": "soins", "dent": "", "prix": 250.0, "panier": "" }
+      ]
+    },
+    {
+      "file": "ribe-pta-barre.png",
+      "source": "Cabinet Ribe — prothèse amovible sur barre d'Ackermann",
+      "expected": [
+        { "code": "LBLD034", "cat": "implant", "dent": "12 14 22 24", "prix": 3800.0, "panier": "" },
+        { "code": "LBQP001", "cat": "soins", "dent": "", "prix": 250.0, "panier": "" },
+        { "code": "HBLD031", "cat": "prothese", "dent": "haut", "prix": 1100.0, "panier": "rac0" }
+      ]
+    },
+    {
+      "file": "ribe-bridge-full-zircone.png",
+      "source": "Cabinet Ribe — full-arch implant (infrastructure + barre + 12 couronnes)",
+      "expected": [
+        { "code": "HBLD005", "cat": "prothese", "dent": "46 44 42 32 34 36", "prix": 660.0, "panier": "" },
+        { "code": "LBLD034", "cat": "implant", "dent": "46 44 42 32 34 36", "prix": 3600.0, "panier": "" },
+        { "code": "", "cat": "prothese", "dent": "46", "prix": 650.0, "panier": "" },
+        { "code": "", "cat": "prothese", "dent": "45", "prix": 650.0, "panier": "" },
+        { "code": "", "cat": "prothese", "dent": "44", "prix": 650.0, "panier": "" },
+        { "code": "", "cat": "prothese", "dent": "43", "prix": 650.0, "panier": "" },
+        { "code": "", "cat": "prothese", "dent": "42", "prix": 650.0, "panier": "" },
+        { "code": "", "cat": "prothese", "dent": "41", "prix": 650.0, "panier": "" },
+        { "code": "", "cat": "prothese", "dent": "31", "prix": 650.0, "panier": "" },
+        { "code": "", "cat": "prothese", "dent": "32", "prix": 650.0, "panier": "" },
+        { "code": "", "cat": "prothese", "dent": "33", "prix": 650.0, "panier": "" },
+        { "code": "", "cat": "prothese", "dent": "34", "prix": 650.0, "panier": "" },
+        { "code": "", "cat": "prothese", "dent": "35", "prix": 650.0, "panier": "" },
+        { "code": "", "cat": "prothese", "dent": "36", "prix": 650.0, "panier": "" }
+      ]
+    },
+    {
+      "file": "ribe-pta-optilocs.png",
+      "source": "Cabinet Ribe — prothèse amovible sur 4 Optilocs",
+      "expected": [
+        { "code": "LBLD193", "cat": "implant", "dent": "43 41 31 33", "prix": 1200.0, "panier": "" },
+        { "code": "HBLD031", "cat": "prothese", "dent": "bas", "prix": 1100.0, "panier": "rac0" },
+        { "code": "LBQP001", "cat": "soins", "dent": "", "prix": 150.0, "panier": "" }
+      ]
+    },
+    {
+      "file": "devis-officiel-alternatives.png",
+      "source": "Devis conventionnel officiel — alternatives (sans RAC / RAC modéré), dent 26",
+      "expected": [
+        { "code": "HBLD038", "cat": "prothese", "dent": "26", "prix": 290.0, "panier": "rac0" },
+        { "code": "HBLD490", "cat": "prothese", "dent": "26", "prix": 60.0, "panier": "" },
+        { "code": "HBLD073", "cat": "prothese", "dent": "26", "prix": 500.0, "panier": "maitrise" },
+        { "code": "HBLD724", "cat": "prothese", "dent": "26", "prix": 60.0, "panier": "" }
+      ]
+    }
+  ]
+}

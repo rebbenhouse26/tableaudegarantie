@@ -1,0 +1,83 @@
+{
+  "_comment": "Vérité-terrain pour évaluer l'extraction. Chaque entrée = la colonne de garantie LA PLUS ÉLEVÉE d'un tableau réel (image/PDF dans eval/images/<file>). La comparaison porte sur type+valeur (les plafonds ne sont pas notés). inlaycore=0 = pas de ligne dédiée → le score accepte que l'inlay-core vaille le taux prothèse (repli). Ajouter d'autres tableaux ici au fil de l'eau.",
+  "cases": [
+    {
+      "file": "mgen.pdf",
+      "source": "MGEN — Régime N°2 (le plus élevé). Pas de ligne inlay-core dédiée → repli prothèse.",
+      "expected": {
+        "soins": { "type": "pct", "val": 100, "plafond": 0 },
+        "prothese": { "type": "pct", "val": 375, "plafond": 0 },
+        "inlaycore": { "type": "pct", "val": 0, "plafond": 0 },
+        "implant": { "type": "forfait", "val": 300, "plafond": 900 },
+        "paro": { "type": "forfait", "val": 200, "plafond": 200 },
+        "ortho": { "type": "pct", "val": 250, "plafond": 0 },
+        "esthetique": { "type": "forfait", "val": 0, "plafond": 0 }
+      }
+    },
+    {
+      "file": "macif.pdf",
+      "source": "Macif — niveau EXCELLENCE (le plus élevé). Inlay-core dédié 120 €.",
+      "expected": {
+        "soins": { "type": "pct", "val": 100, "plafond": 0 },
+        "prothese": { "type": "forfait", "val": 400, "plafond": 0 },
+        "inlaycore": { "type": "forfait", "val": 120, "plafond": 0 },
+        "implant": { "type": "forfait", "val": 450, "plafond": 0 },
+        "paro": { "type": "forfait", "val": 250, "plafond": 0 },
+        "ortho": { "type": "forfait", "val": 450, "plafond": 0 },
+        "esthetique": { "type": "forfait", "val": 0, "plafond": 0 }
+      }
+    },
+    {
+      "file": "aesio-particuliers-n3.pdf",
+      "source": "AÉSIO Particuliers N3 — colonne TOTAL. Inlay-core dédié 130 % (≠ et < prothèses 200 %).",
+      "expected": {
+        "soins": { "type": "pct", "val": 130, "plafond": 0 },
+        "prothese": { "type": "pct", "val": 200, "plafond": 0 },
+        "inlaycore": { "type": "pct", "val": 130, "plafond": 0 },
+        "implant": { "type": "forfait", "val": 250, "plafond": 0 },
+        "paro": { "type": "forfait", "val": 0, "plafond": 0 },
+        "ortho": { "type": "pct", "val": 200, "plafond": 0 },
+        "esthetique": { "type": "forfait", "val": 0, "plafond": 0 }
+      }
+    },
+    {
+      "file": "aesio-pro-n4.pdf",
+      "source": "AÉSIO Pro Niveau 4 — colonne TOTAL (RG+mutuelle). Pas de ligne inlay-core → repli.",
+      "expected": {
+        "soins": { "type": "pct", "val": 175, "plafond": 0 },
+        "prothese": { "type": "pct", "val": 300, "plafond": 0 },
+        "inlaycore": { "type": "pct", "val": 0, "plafond": 0 },
+        "implant": { "type": "forfait", "val": 800, "plafond": 0 },
+        "paro": { "type": "forfait", "val": 0, "plafond": 0 },
+        "ortho": { "type": "pct", "val": 300, "plafond": 0 },
+        "esthetique": { "type": "forfait", "val": 0, "plafond": 0 }
+      }
+    },
+    {
+      "file": "swisslife-part.pdf",
+      "source": "Swiss Life Santé Particuliers — formule 9 (la + élevée). Paro incluse dans les soins.",
+      "expected": {
+        "soins": { "type": "pct", "val": 500, "plafond": 0 },
+        "prothese": { "type": "pct", "val": 500, "plafond": 0 },
+        "inlaycore": { "type": "pct", "val": 0, "plafond": 0 },
+        "implant": { "type": "forfait", "val": 750, "plafond": 0 },
+        "paro": { "type": "pct", "val": 500, "plafond": 0 },
+        "ortho": { "type": "pct", "val": 500, "plafond": 0 },
+        "esthetique": { "type": "forfait", "val": 0, "plafond": 0 }
+      }
+    },
+    {
+      "file": "malakoff-responsables.pdf",
+      "source": "Malakoff Humanis (CCN immobilier) — Base+Option 3. Inlay-core à clavette dédié 500%. Paro incluse 125%.",
+      "expected": {
+        "soins": { "type": "pct", "val": 125, "plafond": 0 },
+        "prothese": { "type": "pct", "val": 500, "plafond": 0 },
+        "inlaycore": { "type": "pct", "val": 500, "plafond": 0 },
+        "implant": { "type": "forfait", "val": 801, "plafond": 0 },
+        "paro": { "type": "pct", "val": 125, "plafond": 0 },
+        "ortho": { "type": "pct", "val": 500, "plafond": 0 },
+        "esthetique": { "type": "forfait", "val": 0, "plafond": 0 }
+      }
+    }
+  ]
+}

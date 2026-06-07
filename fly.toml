@@ -1,0 +1,32 @@
+# Déploiement Fly.io — application unique (image combinée nginx + Node + SQLite).
+#
+#   fly launch --no-deploy        # crée l'app (ou: fly apps create tableau-de-garanti)
+#   fly volumes create tdg_data --size 1
+#   fly secrets set JWT_SECRET=$(openssl rand -hex 32)
+#   fly deploy
+#
+# ⚠️ SQLite = une seule instance avec un volume. Ne pas scaler à >1 machine.
+
+app = "tableau-de-garanti"
+primary_region = "cdg"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  DB_PATH = "/api/data/tableau-de-garanti.db"
+
+[http_service]
+  internal_port = 80
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[mounts]]
+  source = "tdg_data"
+  destination = "/api/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

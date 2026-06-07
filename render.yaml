@@ -1,0 +1,52 @@
+# Déploiement Render — Blueprint (service web Docker unique + disque pour SQLite).
+# Dans Render : New > Blueprint, pointer ce dépôt. Render lit render.yaml.
+#
+# Render injecte $PORT : l'entrypoint configure nginx pour écouter sur ce port,
+# tandis que le backend reste sur 4000 en interne.
+# Un disque persistant nécessite au minimum le plan "starter" (payant).
+
+services:
+  - type: web
+    name: tableau-de-garanti
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    region: frankfurt
+    healthCheckPath: /api/health
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DB_PATH
+        value: /api/data/tableau-de-garanti.db
+      # ⚠️ Render n'est PAS certifié HDS — pour des données de santé réelles,
+      # déployer ce même Dockerfile sur un hébergeur HDS (OVHcloud HDS, Scaleway…).
+      # Renseigner les secrets ci-dessous dans le dashboard (sync:false).
+      - key: APP_BASE_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: BREVO_API_KEY
+        sync: false
+      - key: EMAIL_SENDER
+        sync: false
+      - key: EMAIL_SENDER_NAME
+        value: Tableau de Garanti
+      - key: ALMA_API_KEY
+        sync: false
+      - key: ALMA_MODE
+        value: live
+      - key: KLARNA_USERNAME
+        sync: false
+      - key: KLARNA_PASSWORD
+        sync: false
+      - key: KLARNA_REGION
+        value: eu
+      - key: KLARNA_MODE
+        value: live
+    disk:
+      name: tdg-data
+      mountPath: /api/data
+      sizeGB: 1

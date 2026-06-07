@@ -1,0 +1,38 @@
+name: Deploy (Fly.io)
+
+# Déploie sur Fly.io après un push sur main (ou manuellement).
+# Prérequis : créer un secret de dépôt FLY_API_TOKEN
+#   (GitHub ▸ Settings ▸ Secrets and variables ▸ Actions ▸ New repository secret)
+#   Jeton obtenu via :  fly tokens create deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+# Évite les déploiements concurrents.
+concurrency:
+  group: deploy-fly
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: fly deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vérifier la présence du token Fly
+        id: guard
+        run: |
+          if [ -n "${{ secrets.FLY_API_TOKEN }}" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::FLY_API_TOKEN absent — déploiement ignoré. Ajoutez le secret pour activer le déploiement automatique."
+          fi
+      - uses: actions/checkout@v4
+        if: steps.guard.outputs.ready == 'true'
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+        if: steps.guard.outputs.ready == 'true'
+      - run: flyctl deploy --remote-only
+        if: steps.guard.outputs.ready == 'true'
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

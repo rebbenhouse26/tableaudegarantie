@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau de Garanti — Estimez le reste à charge avant le rendez-vous</title>
+<meta name="description" content="Tableau de Garanti aide les cabinets dentaires à transformer les tableaux de garanties mutuelle en reste à charge clair, pour des devis plus rapides et mieux acceptés.">
+<style>
+  :root{
+    --blue:#1f6fb2;--dark:#16435f;--light:#e8f1f8;--grey:#f5f7fa;
+    --green:#1f9d6b;--ink:#1f2b33;--muted:#5b6b78;--line:#e4eaf0;--white:#fff;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);line-height:1.6;background:#fff}
+  a{color:inherit;text-decoration:none}
+  .container{max-width:1080px;margin:0 auto;padding:0 22px}
+  /* nav */
+  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;color:var(--dark)}
+  .logo{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+  .nav-links{display:flex;gap:26px;align-items:center;font-size:14.5px;font-weight:500}
+  .nav-links a{color:var(--muted)}.nav-links a:hover{color:var(--blue)}
+  .btn{display:inline-block;font-weight:600;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;background:var(--blue);color:#fff;font-size:15px;transition:.15s}
+  .btn:hover{background:#195d96;transform:translateY(-1px)}
+  .btn.lg{padding:15px 30px;font-size:16px}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--dark)}
+  .btn.ghost:hover{border-color:var(--blue);color:var(--blue);background:#fff}
+  @media(max-width:760px){.nav-links a:not(.btn){display:none}}
+  /* hero */
+  .hero{background:linear-gradient(160deg,#f3f8fc 0%,#e8f1f8 100%);padding:74px 0 84px;position:relative;overflow:hidden}
+  .hero h1{font-size:46px;line-height:1.12;margin:0 0 18px;color:var(--dark);max-width:780px;letter-spacing:-.5px}
+  .hero h1 span{color:var(--blue)}
+  .hero p.lead{font-size:19px;color:var(--muted);max-width:620px;margin:0 0 30px}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .reassure{margin-top:18px;font-size:13.5px;color:var(--muted);display:flex;gap:18px;flex-wrap:wrap}
+  .reassure span{display:flex;align-items:center;gap:6px}
+  .tick{color:var(--green);font-weight:800}
+  /* sections */
+  section{padding:72px 0}
+  .eyebrow{color:var(--blue);font-weight:700;font-size:13px;letter-spacing:1.4px;text-transform:uppercase;margin:0 0 10px}
+  h2.sec{font-size:33px;margin:0 0 14px;color:var(--dark);letter-spacing:-.4px}
+  .sec-sub{font-size:17px;color:var(--muted);max-width:680px;margin:0 0 42px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;transition:.18s}
+  .card:hover{box-shadow:0 12px 30px rgba(16,35,55,.08);transform:translateY(-3px)}
+  .ico{width:46px;height:46px;border-radius:12px;background:var(--light);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:23px;margin-bottom:14px}
+  .card h3{margin:0 0 7px;font-size:18px;color:var(--dark)}
+  .card p{margin:0;color:var(--muted);font-size:14.5px}
+  .alt{background:var(--grey)}
+  /* problem list */
+  .prob{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .prob:last-child{border-bottom:none}
+  .prob .x{color:#c0392b;font-weight:800;font-size:18px;flex-shrink:0}
+  .prob b{color:var(--dark)} .prob p{margin:2px 0 0;color:var(--muted);font-size:14px}
+  /* steps */
+  .steps{counter-reset:s;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .stp{position:relative;padding-top:8px}
+  .stp .num{width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+  .stp h4{margin:0 0 5px;font-size:16px;color:var(--dark)}
+  .stp p{margin:0;color:var(--muted);font-size:14px}
+  /* pricing */
+  .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:stretch}
+  .plan{border:1px solid var(--line);border-radius:16px;padding:24px;background:#fff;display:flex;flex-direction:column}
+  .plan.hot{border-color:var(--blue);box-shadow:0 12px 30px rgba(31,111,178,.14);position:relative}
+  .plan.hot::before{content:"Le plus choisi";position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px}
+  .plan h3{margin:0 0 4px;font-size:18px;color:var(--dark)}
+  .plan .lvl{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+  .plan .amt{font-size:30px;font-weight:800;color:var(--dark)}
+  .plan .amt small{font-size:14px;font-weight:500;color:var(--muted)}
+  .plan ul{list-style:none;padding:0;margin:16px 0 20px;font-size:13.5px;color:var(--muted);flex:1}
+  .plan li{padding:5px 0 5px 22px;position:relative}
+  .plan li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:800}
+  /* stat band */
+  .band{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;border-radius:20px;padding:42px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:center}
+  .band .big{font-size:38px;font-weight:800}
+  .band .lab{font-size:14px;opacity:.85}
+  /* form */
+  .form-wrap{background:#fff;border:1px solid var(--line);border-radius:18px;padding:34px;box-shadow:0 14px 40px rgba(16,35,55,.07)}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  label{font-size:13.5px;font-weight:600;display:block;margin-bottom:6px;color:var(--dark)}
+  input,select,textarea{font:inherit;width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  textarea{resize:vertical;min-height:84px}
+  .full{grid-column:1/-1}
+  .consent{display:flex;gap:10px;font-size:12.5px;color:var(--muted);align-items:flex-start;margin-top:4px}
+  .consent input{width:auto;margin-top:3px}
+  .ok-msg{display:none;background:#e6f6ef;border:1px solid #b6e3cd;color:#13724e;border-radius:12px;padding:16px;font-size:14.5px;margin-top:8px}
+  /* footer */
+  footer{background:var(--dark);color:#cdddea;padding:48px 0 28px;font-size:14px}
+  footer h4{color:#fff;font-size:15px;margin:0 0 12px}
+  .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:30px;margin-bottom:30px}
+  footer a{color:#cdddea}footer a:hover{color:#fff}
+  .legal{border-top:1px solid rgba(255,255,255,.15);padding-top:18px;font-size:12px;color:#9fb8cb;line-height:1.7}
+  .disclaimer{background:#fff7e6;border:1px solid #f1d29a;color:#7a5200;border-radius:12px;padding:14px 18px;font-size:13.5px;margin-top:26px;display:flex;gap:10px}
+  @media(max-width:880px){.grid3,.steps,.price-grid{grid-template-columns:1fr 1fr}.band{grid-template-columns:1fr}.grid2,.form-grid,.foot-grid{grid-template-columns:1fr}.hero h1{font-size:34px}}
+  @media(max-width:520px){.grid3,.steps,.price-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav><div class="container nav-in">
+  <div class="brand"><div class="logo">TG</div>Tableau de Garanti</div>
+  <div class="nav-links">
+    <a href="#probleme">Le problème</a>
+    <a href="#fonctionnement">Fonctionnement</a>
+    <a href="#tarifs">Tarifs</a>
+    <a class="btn" href="#demo">Demander une démo</a>
+  </div>
+</div></nav>
+
+<!-- HERO -->
+<header class="hero"><div class="container">
+  <p class="eyebrow">SaaS pour cabinets dentaires</p>
+  <h1>Estimez le <span>reste à charge</span> de vos patients avant le rendez-vous.</h1>
+  <p class="lead">Tableau de Garanti lit les garanties mutuelle de vos patients, estime leur remboursement et clarifie leur reste à charge — pour des plans de traitement mieux compris et mieux acceptés.</p>
+  <div class="hero-cta">
+    <a class="btn lg" href="#demo">Demander une démo</a>
+    <a class="btn lg ghost" href="#fonctionnement">Voir comment ça marche</a>
+  </div>
+  <div class="reassure">
+    <span><span class="tick">✓</span> Estimation claire et rapide</span>
+    <span><span class="tick">✓</span> Validation par le cabinet</span>
+    <span><span class="tick">✓</span> Conforme RGPD · hébergement HDS</span>
+  </div>
+</div></header>
+
+<!-- PROBLÈME -->
+<section id="probleme"><div class="container">
+  <p class="eyebrow">Le problème</p>
+  <h2 class="sec">Les garanties mutuelle freinent l'acceptation des devis</h2>
+  <p class="sec-sub">Entre le diagnostic et la signature, l'opacité des remboursements coûte du temps au cabinet et des plans de traitement non réalisés.</p>
+  <div class="grid2">
+    <div>
+      <div class="prob"><span class="x">✕</span><div><b>Des tableaux illisibles</b><p>Pourcentages, base de remboursement, plafonds, forfaits : le patient ne comprend pas ses droits réels.</p></div></div>
+      <div class="prob"><span class="x">✕</span><div><b>Un temps administratif énorme</b><p>L'assistante interprète manuellement chaque contrat, mutuelle par mutuelle.</p></div></div>
+      <div class="prob"><span class="x">✕</span><div><b>10 à 15 jours d'attente</b><p>Le devis part à la mutuelle, et la décision du patient se perd dans le délai.</p></div></div>
+    </div>
+    <div>
+      <div class="prob"><span class="x">✕</span><div><b>Le patient bloque sur le prix</b><p>Sans connaître son reste à charge, il reporte ou refuse le traitement.</p></div></div>
+      <div class="prob"><span class="x">✕</span><div><b>Des garanties très variables</b><p>D'un contrat à l'autre, le risque d'erreur ou de sous-estimation est réel.</p></div></div>
+      <div class="prob"><span class="x">✕</span><div><b>Aucun outil de simulation</b><p>Impossible de comparer plusieurs options de traitement en un coup d'œil.</p></div></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- SOLUTION / BÉNÉFICES -->
+<section class="alt"><div class="container">
+  <p class="eyebrow">La solution</p>
+  <h2 class="sec">Le copilote financier du devis dentaire</h2>
+  <p class="sec-sub">Un assistant qui transforme un document incompréhensible en outil de décision clair, pour le patient comme pour le cabinet.</p>
+  <div class="grid3">
+    <div class="card"><div class="ico">📄</div><h3>Lecture automatique</h3><p>Le patient envoie sa mutuelle (photo, PDF ou capture). L'application extrait les garanties dentaires : prothèse, implant, paro, orthodontie.</p></div>
+    <div class="card"><div class="ico">🧮</div><h3>Reste à charge estimé</h3><p>Croisement des garanties avec les actes envisagés. Double calcul et règles métier pour fiabiliser l'estimation.</p></div>
+    <div class="card"><div class="ico">📊</div><h3>Plusieurs scénarios</h3><p>Solution économique, intermédiaire, optimale : le patient compare et décide en connaissance de cause.</p></div>
+    <div class="card"><div class="ico">⏱️</div><h3>Moins d'administratif</h3><p>Vos assistantes passent moins de temps à décrypter les contrats, plus de temps avec les patients.</p></div>
+    <div class="card"><div class="ico">✅</div><h3>Validation cabinet</h3><p>Rien n'est envoyé sans votre contrôle. Le rapport patient reste explicitement une estimation non contractuelle.</p></div>
+    <div class="card"><div class="ico">💳</div><h3>Paiement fluide</h3><p>Intégrations prévues avec Alma, Stripe et GoCardless pour proposer un paiement fractionné adapté au reste à charge.</p></div>
+  </div>
+</div></section>
+
+<!-- FONCTIONNEMENT -->
+<section id="fonctionnement"><div class="container">
+  <p class="eyebrow">Fonctionnement</p>
+  <h2 class="sec">Quatre étapes, avant même le rendez-vous</h2>
+  <p class="sec-sub">Le patient arrive informé, le cabinet présente un devis clair.</p>
+  <div class="steps">
+    <div class="stp"><div class="num">1</div><h4>Le patient reçoit un lien</h4><p>Envoyé avant le RDV, idéalement depuis votre logiciel ou Doctolib.</p></div>
+    <div class="stp"><div class="num">2</div><h4>Il transmet sa mutuelle</h4><p>Photo, PDF ou capture de son espace adhérent. C'est tout.</p></div>
+    <div class="stp"><div class="num">3</div><h4>L'app estime le reste à charge</h4><p>Extraction, calcul, comparaison de scénarios de traitement.</p></div>
+    <div class="stp"><div class="num">4</div><h4>Le cabinet valide</h4><p>Vous contrôlez, le patient reçoit un rapport clair et pédagogique.</p></div>
+  </div>
+</div></section>
+
+<!-- STAT BAND -->
+<section class="alt"><div class="container">
+  <div class="band">
+    <div><div class="big">+2-3</div><div class="lab">devis acceptés / mois suffisent à rentabiliser l'outil</div></div>
+    <div><div class="big">0 jour</div><div class="lab">d'attente pour une première estimation au patient</div></div>
+    <div><div class="big">100 %</div><div class="lab">des estimations validées par le cabinet avant envoi</div></div>
+  </div>
+</div></section>
+
+<!-- TARIFS -->
+<section id="tarifs"><div class="container">
+  <p class="eyebrow">Tarifs</p>
+  <h2 class="sec">Un abonnement simple, par cabinet</h2>
+  <p class="sec-sub">Sans engagement long. Le prix se rentabilise dès les premiers devis additionnels acceptés.</p>
+  <div class="price-grid">
+    <div class="plan"><h3>Solo</h3><div class="lvl">Praticien seul</div><div class="amt">49–79€<small>/mois</small></div>
+      <ul><li>Lecture des garanties</li><li>Estimation reste à charge</li><li>Rapport patient</li><li>Mentions légales incluses</li></ul>
+      <a class="btn ghost" href="#demo">Demander une démo</a></div>
+    <div class="plan hot"><h3>Pro</h3><div class="lvl">Cabinet avec assistante</div><div class="amt">99–199€<small>/mois</small></div>
+      <ul><li>Tout Solo</li><li>Scénarios de traitement</li><li>Plusieurs utilisateurs</li><li>Support prioritaire</li></ul>
+      <a class="btn" href="#demo">Demander une démo</a></div>
+    <div class="plan"><h3>Premium</h3><div class="lvl">Orienté prothèse / implanto</div><div class="amt">299–499€<small>/mois</small></div>
+      <ul><li>Tout Pro</li><li>Intégrations paiement</li><li>Modèles de devis avancés</li><li>Accompagnement dédié</li></ul>
+      <a class="btn ghost" href="#demo">Demander une démo</a></div>
+    <div class="plan"><h3>Groupe</h3><div class="lvl">Centres & réseaux</div><div class="amt">Sur devis</div>
+      <ul><li>Multi-sites</li><li>Reporting consolidé</li><li>API & intégrations</li><li>Conformité renforcée</li></ul>
+      <a class="btn ghost" href="#demo">Nous contacter</a></div>
+  </div>
+</div></section>
+
+<!-- DÉMO / LEADS -->
+<section id="demo" class="alt"><div class="container">
+  <p class="eyebrow">Demander une démo</p>
+  <h2 class="sec">Voyez l'outil sur vos propres cas</h2>
+  <p class="sec-sub">Laissez-nous vos coordonnées : nous vous montrons comment Tableau de Garanti s'intègre à votre cabinet.</p>
+  <div class="form-wrap">
+    <form id="leadForm" onsubmit="return submitLead(event)">
+      <div class="form-grid">
+        <div><label for="nom">Nom du praticien *</label><input id="nom" required></div>
+        <div><label for="cab">Nom du cabinet</label><input id="cab"></div>
+        <div><label for="email">E-mail professionnel *</label><input id="email" type="email" required></div>
+        <div><label for="tel">Téléphone</label><input id="tel" type="tel"></div>
+        <div><label for="type">Profil du cabinet</label>
+          <select id="type"><option>Cabinet généraliste</option><option>Orienté prothèse</option><option>Orienté implantologie</option><option>Orthodontie</option><option>Centre / réseau</option></select></div>
+        <div><label for="taille">Nombre de praticiens</label>
+          <select id="taille"><option>1</option><option>2–3</option><option>4–6</option><option>7 et +</option></select></div>
+        <div class="full"><label for="msg">Votre besoin (optionnel)</label><textarea id="msg" placeholder="Ex. : nous perdons du temps à expliquer les remboursements de prothèse…"></textarea></div>
+        <div class="full consent">
+          <input type="checkbox" id="rgpd" required>
+          <label for="rgpd" style="font-weight:400;margin:0">J'accepte que mes coordonnées soient utilisées pour être recontacté au sujet de cette démo, conformément à la <a href="#" style="color:var(--blue)">politique de confidentialité</a> (RGPD). Aucune donnée de santé n'est collectée via ce formulaire.</label>
+        </div>
+        <div class="full"><button class="btn lg" type="submit" style="width:100%">Demander ma démo gratuite</button></div>
+      </div>
+    </form>
+    <div class="ok-msg" id="okMsg">✓ Merci ! Votre demande a bien été enregistrée (démo — aucune donnée n'est réellement envoyée). Nous vous recontacterions sous 48 h.</div>
+  </div>
+  <div class="disclaimer"><span>⚠️</span><div><b>Estimation non contractuelle.</b> Tableau de Garanti fournit une aide à la lecture des garanties et une estimation du reste à charge. Le remboursement définitif relève de la mutuelle et de l'Assurance Maladie. L'outil n'incite jamais à modifier un plan de traitement médicalement justifié.</div></div>
+</div></section>
+
+<!-- FOOTER -->
+<footer><div class="container">
+  <div class="foot-grid">
+    <div>
+      <div class="brand" style="color:#fff;margin-bottom:12px"><div class="logo">TG</div>Tableau de Garanti</div>
+      <p style="margin:0;max-width:340px;color:#9fb8cb">Le copilote financier du devis dentaire. Des remboursements lisibles, des patients informés, des devis mieux acceptés.</p>
+    </div>
+    <div><h4>Produit</h4>
+      <p><a href="#probleme">Le problème</a></p><p><a href="#fonctionnement">Fonctionnement</a></p><p><a href="#tarifs">Tarifs</a></p><p><a href="#demo">Demander une démo</a></p>
+    </div>
+    <div><h4>Conformité</h4>
+      <p><a href="#">Politique de confidentialité</a></p><p><a href="#">RGPD</a></p><p><a href="#">Hébergement HDS</a></p><p><a href="#">Mentions légales</a></p>
+    </div>
+  </div>
+  <div class="legal">
+    Données de santé hébergées chez un hébergeur certifié HDS, conformément au RGPD. Les estimations fournies sont non contractuelles et soumises à la validation du cabinet. © 2026 Tableau de Garanti — démonstration. Les mutuelles et montants présentés sont fictifs.
+  </div>
+</div></footer>
+
+<script>
+function submitLead(e){
+  e.preventDefault();
+  document.getElementById('leadForm').style.display='none';
+  document.getElementById('okMsg').style.display='block';
+  document.getElementById('okMsg').scrollIntoView({behavior:'smooth',block:'center'});
+  return false;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 \"/Users/benhamoudan/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/f90ffdb3-b099-4ee1-be6f-eb59a1d2d785/f508a69e-4117-4ecd-872e-a6e619091a06/skills/docx/scripts/office/unpack.py\" Business_Plan_Tableau_de_Garanti.docx /tmp/bp_unpacked/)",
+      "Bash(npm --version)",
+      "Read(//usr/local/bin/**)",
+      "Read(//Users/benhamoudan/.nvm/versions/**)",
+      "Bash(command -v fnm volta nvm)"
+    ]
+  }
+}

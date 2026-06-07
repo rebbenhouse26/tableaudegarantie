@@ -1,0 +1,28 @@
+# Dépendances
+node_modules/
+**/node_modules/
+
+# Secrets — NE JAMAIS committer (.env.example et .env.production.example restent suivis)
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Builds
+dist/
+build/
+**/dist/
+**/build/
+
+# Base de données / données locales
+data/
+**/data/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+
+# Logs & divers
+*.log
+.DS_Store
+.vercel

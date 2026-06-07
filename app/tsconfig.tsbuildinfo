@@ -1,0 +1,1 @@
+{"root":["./src/main.tsx","./src/domain/actes.ts","./src/domain/calcul.ts","./src/domain/mutuelles.ts","./src/domain/scenarios.ts","./src/domain/types.ts","./src/pages/demoapp.tsx","./src/pages/landingpage.tsx"],"errors":true,"version":"5.9.3"}

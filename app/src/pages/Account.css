@@ -1,0 +1,222 @@
+.acct {
+  min-height: 100vh;
+  background: #f6f8fb;
+}
+.acct .topbar {
+  background: linear-gradient(135deg, var(--dark), var(--blue));
+  color: #fff;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.acct .topbar .brand {
+  color: #fff;
+}
+.acct .topbar .brand .logo {
+  background: #fff;
+  color: var(--blue);
+}
+.acct .topbar a,
+.acct .topbar button {
+  color: #fff;
+  font-size: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+.acct .topbar .links {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+.acct .topbar a:hover,
+.acct .topbar button:hover {
+  text-decoration: underline;
+}
+
+/* Auth card */
+.auth-wrap {
+  max-width: 420px;
+  margin: 56px auto;
+  padding: 0 18px;
+}
+.auth-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 14px 40px rgba(16, 35, 55, 0.07);
+}
+.auth-card h1 {
+  font-size: 22px;
+  margin: 0 0 4px;
+  color: var(--dark);
+}
+.auth-card .sub {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0 0 22px;
+}
+.auth-card label {
+  font-size: 13px;
+  font-weight: 600;
+  display: block;
+  margin: 14px 0 6px;
+  color: var(--dark);
+}
+.auth-card input {
+  font: inherit;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+.auth-card .btn {
+  width: 100%;
+  margin-top: 22px;
+}
+.auth-err {
+  background: #fdecea;
+  border: 1px solid #f5c6c0;
+  color: #a32b1e;
+  border-radius: 9px;
+  padding: 10px 12px;
+  font-size: 13px;
+  margin-top: 16px;
+}
+.auth-switch {
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-top: 18px;
+}
+.auth-switch button {
+  background: none;
+  border: none;
+  color: var(--blue);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  padding: 0;
+}
+
+/* Dashboard */
+.dash {
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 28px 18px 60px;
+}
+.dash h1 {
+  font-size: 24px;
+  color: var(--dark);
+  margin: 0 0 4px;
+}
+.dash .sub {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0 0 24px;
+}
+.dash-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+.dash table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.dash th,
+.dash td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.dash th {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+  background: var(--grey);
+}
+.dash td.num,
+.dash th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.dash tr:last-child td {
+  border-bottom: none;
+}
+.dash .empty {
+  background: #fff;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--muted);
+}
+.dash .link-btn {
+  background: none;
+  border: none;
+  color: var(--red);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+.dash .link-btn:hover {
+  text-decoration: underline;
+}
+.dash .rac-amt {
+  font-weight: 700;
+  color: var(--dark);
+}
+.dash .invite-create {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.dash .invite-create input {
+  flex: 1;
+  min-width: 220px;
+  font: inherit;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+.dash .pill-ok {
+  background: var(--greenbg);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.dash .pill-wait {
+  background: var(--grey);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.dash .link-copy {
+  background: none;
+  border: none;
+  color: var(--blue);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0;
+}
+.dash .link-copy:hover {
+  text-decoration: underline;
+}
