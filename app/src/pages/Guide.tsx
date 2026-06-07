@@ -19,7 +19,7 @@ export default function Guide() {
         <div className="auth-card" style={{ width: '100%', textAlign: 'left' }}>
           <h1>Guide d'utilisation</h1>
           <p className="sub">
-            En quelques minutes : récupérer la mutuelle du patient, générer 3 devis clairs et faire
+            En quelques minutes : récupérer la mutuelle du patient, générer un devis optimisé et faire
             signer dès le rendez-vous.
           </p>
 
@@ -46,7 +46,7 @@ export default function Guide() {
               <li>Où trouver le tableau ? Espace adhérent de la mutuelle, e-mail annuel, ou appli mobile.</li>
             </ol>
 
-            <h3>③ Côté cabinet — analyser et générer les 3 devis</h3>
+            <h3>③ Côté cabinet — analyser et générer le devis optimisé</h3>
             <ol>
               <li>Dans le tableau de bord, ouvrez la demande du patient (vous pouvez télécharger le fichier joint).</li>
               <li>L'IA lit le tableau de garanties et calcule la part Sécu + mutuelle + reste à charge.</li>
@@ -55,7 +55,7 @@ export default function Guide() {
                 CCAM et le montant sont lus automatiquement). Vérifiez et corrigez les lignes.
               </li>
               <li>
-                L'app génère <b>3 devis</b> :
+                L'app génère un <b>devis optimisé</b>, décliné en options pour s'adapter au patient :
                 <ul>
                   <li><b>Initial</b> — tel que saisi.</li>
                   <li><b>Remboursement maximal</b> — pousse vers le tarif libre pour maximiser la prise en charge ; le reste à charge peut être réglé en plusieurs fois.</li>

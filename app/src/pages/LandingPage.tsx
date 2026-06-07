@@ -67,9 +67,9 @@ export default function LandingPage() {
             patient.
           </h1>
           <p className="lead">
-            Garant-AI lit la mutuelle du patient et génère <b>3 devis clairs</b> — dont un à
-            <b> 0 € de reste à charge</b> et un <b>premium payable en plusieurs fois</b>. Le patient
-            comprend, compare et signe — souvent dès le rendez‑vous.
+            Garant-AI lit la mutuelle du patient et génère un <b>devis optimisé</b> : le meilleur
+            traitement, avec une <b>prise en charge maximale</b> et une <b>facilité de paiement</b>. Le
+            patient comprend, accepte et signe — souvent dès le rendez‑vous.
           </p>
           <div className="hero-cta">
             <Link className="btn lg" to="/app">
@@ -142,7 +142,7 @@ export default function LandingPage() {
           <div className="grid3">
             <Feature ico="📄" title="Lecture automatique" text="Le patient envoie sa mutuelle (photo, PDF ou capture). L'application extrait les garanties dentaires : prothèse, implant, paro, orthodontie." />
             <Feature ico="🧮" title="Reste à charge estimé" text="Croisement des garanties avec les actes envisagés. Double calcul et règles métier pour fiabiliser l'estimation." />
-            <Feature ico="📊" title="Plusieurs scénarios" text="Solution économique, intermédiaire, optimale : le patient compare et décide en connaissance de cause." />
+            <Feature ico="📊" title="Devis optimisé" text="Garant-AI propose au praticien le devis qui garantit le meilleur traitement, avec la prise en charge maximale et une facilité de paiement." />
             <Feature ico="⏱️" title="Moins d'administratif" text="Vos assistantes passent moins de temps à décrypter les contrats, plus de temps avec les patients." />
             <Feature ico="✅" title="Validation cabinet" text="Rien n'est envoyé sans votre contrôle. Le rapport patient reste explicitement une estimation non contractuelle." />
             <Feature ico="💳" title="Paiement fluide" text="Intégrations prévues avec Alma, Stripe et GoCardless pour proposer un paiement fractionné adapté au reste à charge." />
@@ -159,7 +159,7 @@ export default function LandingPage() {
           <div className="steps">
             <Step n={1} title="Le patient reçoit un lien" text="Envoyé avant le RDV, idéalement depuis votre logiciel ou Doctolib." />
             <Step n={2} title="Il transmet sa mutuelle" text="Photo, PDF ou capture de son espace adhérent. C'est tout." />
-            <Step n={3} title="L'app estime le reste à charge" text="Extraction, calcul, comparaison de scénarios de traitement." />
+            <Step n={3} title="L'app génère le devis optimisé" text="Extraction, calcul du reste à charge et devis optimisé pour le patient." />
             <Step n={4} title="Le cabinet valide" text="Vous contrôlez, le patient reçoit un rapport clair et pédagogique." />
           </div>
         </div>
@@ -206,7 +206,7 @@ export default function LandingPage() {
               color="#16a34a"
               name="S. Martin"
               role="Assistante dentaire · Nantes"
-              text="Fini les heures à décortiquer les mutuelles. Une photo du tableau, et l'estimation est prête. Les trois devis aident vraiment le patient à choisir."
+              text="Fini les heures à décortiquer les mutuelles. Une photo du tableau, et le devis optimisé est prêt. Il aide vraiment le patient à accepter le traitement."
             />
             <Avis
               initials="JL"
@@ -233,7 +233,7 @@ export default function LandingPage() {
           </p>
           <div className="price-grid">
             <Plan name="Solo" lvl="Praticien seul" amt="49–79€" per="/mois" feats={['Lecture des garanties', 'Estimation reste à charge', 'Rapport patient', 'Mentions légales incluses']} />
-            <Plan name="Pro" lvl="Cabinet avec assistante" amt="99–199€" per="/mois" hot feats={['Tout Solo', 'Scénarios de traitement', 'Plusieurs utilisateurs', 'Support prioritaire']} />
+            <Plan name="Pro" lvl="Cabinet avec assistante" amt="99–199€" per="/mois" hot feats={['Tout Solo', 'Devis optimisé', 'Plusieurs utilisateurs', 'Support prioritaire']} />
             <Plan name="Premium" lvl="Orienté prothèse / implanto" amt="299–499€" per="/mois" feats={['Tout Pro', 'Intégrations paiement', 'Modèles de devis avancés', 'Accompagnement dédié']} />
             <Plan name="Groupe" lvl="Centres & réseaux" amt="Sur devis" per="" feats={['Multi-sites', 'Reporting consolidé', 'API & intégrations', 'Conformité renforcée']} />
           </div>

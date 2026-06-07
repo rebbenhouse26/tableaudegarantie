@@ -781,11 +781,12 @@ function Step4({
     <div className="card">
       <h2>4. Synthèse garanties × devis</h2>
       <p className="sub">
-        Croisement du devis et des garanties (bases CCAM). On propose <b>3 devis</b> : le
-        <b> devis initial</b>, le <b>devis optimisé — remboursement maximal</b> (mutuelle exploitée au
-        max selon le tableau ; le reste à charge restant est <b>payable en plusieurs fois</b>), et le
-        <b> devis optimisé — reste à charge 0</b> (le patient ne paie rien). À acte médicalement
-        équivalent, à valider par le cabinet ; l'outil n'incite jamais à dégrader un soin justifié.
+        Croisement du devis et des garanties (bases CCAM). Garant-AI propose un <b>devis optimisé</b>,
+        décliné en options : le <b>devis initial</b>, le <b>devis optimisé — remboursement maximal</b>
+        (mutuelle exploitée au max selon le tableau ; le reste à charge restant est <b>payable en
+        plusieurs fois</b>), et le <b>devis optimisé — reste à charge 0</b> (le patient ne paie rien). À
+        acte médicalement équivalent, à valider par le cabinet ; l'outil n'incite jamais à dégrader un
+        soin justifié.
       </p>
 
       <div className="totbar">
