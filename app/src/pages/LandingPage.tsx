@@ -49,6 +49,7 @@ export default function LandingPage() {
             <a href="#fonctionnement">Fonctionnement</a>
             <a href="#avis">Avis</a>
             <a href="#tarifs">Tarifs</a>
+            <a href="#faq">FAQ</a>
             <Link to="/connexion">Connexion</Link>
             <Link className="btn" to="/app">
               Essayer la démo
@@ -239,8 +240,53 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section id="faq">
+        <div className="container">
+          <p className="eyebrow">FAQ</p>
+          <h2 className="sec">Les questions qu'on nous pose le plus</h2>
+          <p className="sec-sub">
+            Tout ce qu'il faut savoir avant de tester Garant-AI dans votre cabinet.
+          </p>
+          <div className="faq-list">
+            <Faq
+              q="Comment Garant-AI lit-il la mutuelle du patient ?"
+              a="Le patient envoie une photo ou un PDF de son tableau de garanties (depuis son espace adhérent, son e-mail annuel ou son appli mutuelle). L'IA en extrait les garanties dentaires — prothèse, implant, parodontie, orthodontie — et la base de remboursement associée."
+            />
+            <Faq
+              q="Les estimations sont-elles fiables ? Sont-elles contractuelles ?"
+              a="Les montants sont calculés à partir des garanties lues et de la cotation CCAM du devis. Ils sont indicatifs et doivent être validés par le cabinet : le remboursement définitif relève de l'Assurance Maladie et de la complémentaire santé. Rien n'est envoyé au patient sans votre contrôle."
+            />
+            <Faq
+              q="Pourquoi 3 devis ?"
+              a="Garant-AI génère un devis initial, un devis « remboursement maximal » (qui pousse vers le tarif libre pour maximiser la prise en charge, le reste à charge pouvant être payé en plusieurs fois) et un devis « reste à charge 0 € » (qui privilégie le panier 100 % Santé). Le patient compare et choisit en connaissance de cause."
+            />
+            <Faq
+              q="Le patient doit-il installer ou créer un compte ?"
+              a="Non. Il reçoit un simple lien, dépose son tableau de garanties et c'est tout. Aucune analyse de son côté : il envoie juste le fichier, l'analyse se fait côté cabinet."
+            />
+            <Faq
+              q="Puis-je importer un devis depuis mon logiciel (Logosw…) ?"
+              a="Oui. Vous pouvez importer le devis en photo/PDF, ou le coller en texte depuis Logosw : le code CCAM et le montant sont lus automatiquement. Vous vérifiez et corrigez les lignes avant de générer les 3 devis."
+            />
+            <Faq
+              q="Mes données et celles des patients sont-elles protégées ?"
+              a="Les échanges sont chiffrés (HTTPS) et les données ne sont ni revendues ni utilisées à des fins publicitaires. Les devis nominatifs sont des données de santé : pour un usage en production avec de vrais patients, l'hébergement doit être certifié HDS. Voir notre page Sécurité & HDS."
+            />
+            <Faq
+              q="Combien ça coûte ?"
+              a="L'abonnement est mensuel et par cabinet, sans engagement long, à partir de l'offre Solo. En général, 2 à 3 devis acceptés en plus par mois suffisent à rentabiliser l'outil. Voir la section Tarifs."
+            />
+            <Faq
+              q="Le paiement en plusieurs fois, comment ça marche ?"
+              a="Pour le devis « remboursement maximal », le reste à charge peut être proposé en plusieurs fois via un prestataire tiers (Alma / Klarna), sous réserve de son acceptation. Cela débloque souvent les plans de traitement importants."
+            />
+          </div>
+        </div>
+      </section>
+
       {/* DÉMO / LEADS */}
-      <section id="demo">
+      <section id="demo" className="alt">
         <div className="container">
           <p className="eyebrow">Demander une démo</p>
           <h2 className="sec">Voyez l'outil sur vos propres cas</h2>
@@ -479,5 +525,19 @@ function Plan({
         Essayer la démo
       </Link>
     </div>
+  )
+}
+
+function Faq({ q, a }: { q: string; a: string }) {
+  return (
+    <details className="faq-item">
+      <summary>
+        <span>{q}</span>
+        <span className="faq-chev" aria-hidden>
+          ＋
+        </span>
+      </summary>
+      <p>{a}</p>
+    </details>
   )
 }
