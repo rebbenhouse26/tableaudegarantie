@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garant-AI — Estimation des coûts de fonctionnement</title>
+<style>
+  :root{
+    --blue:#2f5fe0;--blue2:#5b8def;--navy:#0e1730;--dark:#16203c;
+    --grey:#f6f8fc;--line:#e6ebf3;--muted:#5a6678;--ink:#18213a;
+    --green:#16a34a;--amber:#c77700;--grad:linear-gradient(135deg,#2f5fe0,#5b8def);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+       color:var(--ink);background:var(--grey);line-height:1.55;padding:30px 16px}
+  .wrap{max-width:880px;margin:0 auto}
+  .logo{width:40px;height:40px;border-radius:11px;background:var(--grad);color:#fff;display:inline-flex;
+        align-items:center;justify-content:center;font-weight:800;vertical-align:middle;margin-right:10px}
+  h1{font-size:26px;margin:0 0 4px;color:var(--dark)}
+  .sub{color:var(--muted);margin:0 0 24px;font-size:14.5px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:20px;
+        box-shadow:0 8px 24px rgba(16,35,55,.05)}
+  h2{font-size:17px;margin:0 0 16px;color:var(--dark)}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .row label{font-weight:600;font-size:14.5px}
+  .row .hint{display:block;font-weight:400;color:var(--muted);font-size:12.5px;margin-top:2px}
+  input[type=number]{width:110px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:15px;text-align:right}
+  input[type=checkbox]{width:20px;height:20px}
+  .out{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px}
+  .tot{border-radius:14px;padding:20px;text-align:center}
+  .tot.low{background:#e7f7ee;border:1px solid #b6e3cd}
+  .tot.high{background:#fff4e6;border:1px solid #f1d29a}
+  .tot .lab{font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+  .tot.low .lab{color:var(--green)}
+  .tot.high .lab{color:var(--amber)}
+  .tot .amt{font-size:34px;font-weight:800;margin:6px 0 2px;color:var(--dark)}
+  .tot .per{font-size:13px;color:var(--muted)}
+  .break{margin-top:18px;font-size:13.5px}
+  .break .br-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);color:var(--muted)}
+  .break .br-row span:last-child{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}
+  th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  tbody tr:hover{background:var(--grey)}
+  .low-c{color:var(--green);font-weight:700}
+  .high-c{color:var(--amber);font-weight:700}
+  .note{background:#eef3ff;border:1px solid #d4e0ff;border-radius:12px;padding:14px 16px;font-size:13px;color:#27408b;margin-top:6px}
+  .note b{color:var(--dark)}
+  details{margin-top:14px;font-size:13px;color:var(--muted)}
+  summary{cursor:pointer;font-weight:600;color:var(--blue)}
+  .warn{background:#fff7e6;border:1px solid #f1d29a;color:#7a5200;border-radius:12px;padding:14px 16px;font-size:13px;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1><span class="logo">GA</span>Estimation des coûts — Garant-AI</h1>
+  <p class="sub">Coûts de fonctionnement mensuels selon votre volume. Fourchette <b style="color:var(--green)">basse</b> / <b style="color:var(--amber)">haute</b>. Modifiez les valeurs : tout se recalcule en direct.</p>
+
+  <!-- PARAMÈTRES -->
+  <div class="card">
+    <h2>1. Votre volume</h2>
+    <div class="row">
+      <label>Nombre de cabinets <span class="hint">cabinets actifs / abonnés</span></label>
+      <input type="number" id="cabinets" value="5" min="0">
+    </div>
+    <div class="row">
+      <label>Dossiers patients / cabinet / mois <span class="hint">1 dossier = 1 tableau de garanties + 1 devis analysés</span></label>
+      <input type="number" id="dossiers" value="40" min="0">
+    </div>
+    <div class="row">
+      <label>E-mails envoyés / dossier <span class="hint">invitation, lien, réinitialisation…</span></label>
+      <input type="number" id="emails" value="2" min="0">
+    </div>
+    <div class="row">
+      <label>Activer les SMS (Brevo) ?</label>
+      <input type="checkbox" id="smsOn">
+    </div>
+    <div class="row">
+      <label>SMS / dossier <span class="hint">si SMS activé</span></label>
+      <input type="number" id="smsPer" value="1" min="0" step="0.5">
+    </div>
+  </div>
+
+  <!-- RÉSULTAT -->
+  <div class="card">
+    <h2>2. Coût mensuel estimé</h2>
+    <div class="out">
+      <div class="tot low"><div class="lab">Estimation basse</div><div class="amt" id="totLow">–</div><div class="per">par mois</div></div>
+      <div class="tot high"><div class="lab">Estimation haute</div><div class="amt" id="totHigh">–</div><div class="per">par mois</div></div>
+    </div>
+    <div class="break" id="break"></div>
+    <p style="text-align:center;margin:16px 0 0;font-size:13px;color:var(--muted)">Soit <b id="annLow"></b> à <b id="annHigh"></b> / an · <b id="perDoss"></b> par dossier en moyenne</p>
+  </div>
+
+  <!-- TABLEAU DE RÉFÉRENCE -->
+  <div class="card">
+    <h2>3. Tableau de référence (40 dossiers/cabinet/mois, e-mail seul)</h2>
+    <table>
+      <thead><tr><th>Scénario</th><th>Dossiers/mois</th><th>Bas</th><th>Haut</th></tr></thead>
+      <tbody id="refBody"></tbody>
+    </table>
+    <p class="note" style="margin-top:14px"><b>À retenir :</b> le socle fixe (Render ≈ 7 €) domine à faible volume. L'IA (Gemini) ne devient un vrai poste qu'à fort volume, mais reste très bon marché par dossier.</p>
+  </div>
+
+  <!-- HYPOTHÈSES -->
+  <div class="card">
+    <h2>4. Hypothèses de calcul</h2>
+    <table>
+      <thead><tr><th>Poste</th><th>Bas</th><th>Haut</th></tr></thead>
+      <tbody>
+        <tr><td>Render (hébergement + disque)</td><td>7 €</td><td>7 €</td></tr>
+        <tr><td>Gemini — par dossier (vision)</td><td>0,003 €</td><td>0,012 €</td></tr>
+        <tr><td>Brevo e-mails</td><td>0 € (offre gratuite)</td><td>9 € au-delà de ~9 000/mois</td></tr>
+        <tr><td>Brevo SMS (France)</td><td>—</td><td>0,045 € / SMS</td></tr>
+        <tr><td>Alma / Klarna</td><td colspan="2" style="text-align:left">0 € fixe — commission prélevée par transaction</td></tr>
+      </tbody>
+    </table>
+    <div class="warn"><b>⚠️ Non inclus :</b> passage en <b>hébergement certifié HDS</b> (obligatoire pour de vrais patients) → plusieurs dizaines à centaines d'€/mois selon l'hébergeur. Nom de domaine ≈ 10-15 €/an. Ces postes ne sont pas encore engagés.</div>
+    <details>
+      <summary>Détail des hypothèses Gemini</summary>
+      <p>Chaque dossier = lecture du tableau de garanties (modèle <i>flash</i>) + lecture du devis (modèle <i>flash-lite</i>). Coût bas ≈ image légère + 1 passage ; coût haut ≈ image lourde + tokens supplémentaires/réessais. Les tarifs au token évoluent : vérifiez la grille Google AI.</p>
+    </details>
+  </div>
+
+  <p class="sub" style="text-align:center">Estimation indicative — les tarifs des prestataires peuvent évoluer. Mise à jour : juin 2026.</p>
+</div>
+
+<script>
+  // Hypothèses (modifiables ici si les tarifs changent)
+  const RENDER = 7;                 // € fixe / mois
+  const GEM_LOW = 0.003, GEM_HIGH = 0.012;   // € par dossier
+  const SMS_PRICE = 0.045;          // € par SMS
+  const BREVO_FREE = 9000;          // e-mails/mois gratuits (~300/j)
+  const BREVO_PAID = 9;             // € si dépassement
+
+  const $ = id => document.getElementById(id);
+  const eur = n => n.toLocaleString('fr-FR',{minimumFractionDigits:n<10?2:0,maximumFractionDigits:2}) + ' €';
+
+  function calc(cab, doss, emailsPerDoss, smsOn, smsPer){
+    const dossiers = cab * doss;
+    const emails = dossiers * emailsPerDoss;
+    const sms = smsOn ? dossiers * smsPer : 0;
+
+    const gemLow = dossiers * GEM_LOW;
+    const gemHigh = dossiers * GEM_HIGH;
+    const brevoLow = 0;                                   // gratuit en bas
+    const brevoHigh = emails > BREVO_FREE ? BREVO_PAID : 0;
+    const smsCost = sms * SMS_PRICE;                       // même prix bas/haut
+
+    const low = RENDER + gemLow + brevoLow + smsCost;
+    const high = RENDER + gemHigh + brevoHigh + smsCost;
+    return {dossiers, emails, sms, gemLow, gemHigh, brevoLow, brevoHigh, smsCost, low, high};
+  }
+
+  function render(){
+    const cab = +$('cabinets').value||0, doss = +$('dossiers').value||0;
+    const emailsPerDoss = +$('emails').value||0, smsOn = $('smsOn').checked, smsPer = +$('smsPer').value||0;
+    const r = calc(cab, doss, emailsPerDoss, smsOn, smsPer);
+
+    $('totLow').textContent = eur(r.low);
+    $('totHigh').textContent = eur(r.high);
+    $('annLow').textContent = eur(r.low*12);
+    $('annHigh').textContent = eur(r.high*12);
+    $('perDoss').textContent = r.dossiers ? eur((r.low+r.high)/2/r.dossiers) : '–';
+
+    $('break').innerHTML =
+      row('Hébergement Render (fixe)', eur(RENDER), eur(RENDER)) +
+      row(`IA Gemini — ${r.dossiers} dossiers`, eur(r.gemLow), eur(r.gemHigh)) +
+      row(`Brevo e-mails — ${r.emails}`, eur(r.brevoLow), eur(r.brevoHigh)) +
+      (smsOn ? row(`Brevo SMS — ${r.sms}`, eur(r.smsCost), eur(r.smsCost)) : '');
+  }
+  function row(label, lo, hi){
+    return `<div class="br-row"><span>${label}</span><span><span class="low-c">${lo}</span> → <span class="high-c">${hi}</span></span></div>`;
+  }
+
+  // Tableau de référence
+  (function refTable(){
+    const scenarios = [
+      ['1 cabinet (test/MVP)', 1],
+      ['5 cabinets', 5],
+      ['20 cabinets', 20],
+      ['50 cabinets', 50],
+      ['100 cabinets', 100],
+    ];
+    $('refBody').innerHTML = scenarios.map(([name, cab])=>{
+      const r = calc(cab, 40, 2, false, 0);
+      return `<tr><td>${name}</td><td>${r.dossiers}</td><td class="low-c">${eur(r.low)}</td><td class="high-c">${eur(r.high)}</td></tr>`;
+    }).join('');
+  })();
+
+  ['cabinets','dossiers','emails','smsPer'].forEach(id=>$(id).addEventListener('input',render));
+  $('smsOn').addEventListener('change',render);
+  render();
+</script>
+</body>
+</html>
