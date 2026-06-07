@@ -45,5 +45,5 @@ app.use(
 )
 
 app.listen(PORT, () => {
-  console.log(`API Tableau de Garanti à l'écoute sur http://localhost:${PORT}`)
+  console.log(`API Garant-AI à l'écoute sur http://localhost:${PORT}`)
 })

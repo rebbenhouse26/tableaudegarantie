@@ -40,8 +40,8 @@ export default function ResetPassword() {
     <div className="acct">
       <div className="topbar">
         <Link to="/" className="brand">
-          <div className="logo">TG</div>
-          Tableau de Garanti
+          <div className="logo">GA</div>
+          Garant-AI
         </Link>
       </div>
 

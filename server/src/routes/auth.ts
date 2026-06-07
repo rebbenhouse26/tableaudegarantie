@@ -93,7 +93,7 @@ authRouter.post('/forgot-password', async (req, res) => {
     const r = await sendEmail({
       to: email,
       toName: row.name,
-      subject: 'Tableau de Garanti — réinitialisation de votre mot de passe',
+      subject: 'Garant-AI — réinitialisation de votre mot de passe',
       html: `<div style="font-family:Helvetica,Arial,sans-serif;max-width:520px;margin:auto;color:#21252b">
         <h2 style="color:#1f6fb2">Réinitialisation du mot de passe</h2>
         <p>Bonjour ${row.name || ''},</p>

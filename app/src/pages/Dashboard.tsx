@@ -225,8 +225,8 @@ export default function Dashboard() {
     <div className="acct">
       <div className="topbar">
         <Link to="/" className="brand">
-          <div className="logo">TG</div>
-          Tableau de Garanti
+          <div className="logo">GA</div>
+          Garant-AI
         </Link>
         <div className="links">
           <span style={{ opacity: 0.85 }}>{cabinet?.name}</span>

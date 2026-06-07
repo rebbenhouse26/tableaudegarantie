@@ -85,7 +85,7 @@ patientAccountRouter.post('/register', async (req, res) => {
     const r = await sendEmail({
       to: mail,
       toName: name,
-      subject: 'Votre espace Tableau de Garanti — déposez votre tableau de garanties',
+      subject: 'Votre espace Garant-AI — déposez votre tableau de garanties',
       html: welcomeEmailHtml(name, link),
     })
     emailed = r.ok
@@ -123,7 +123,7 @@ patientAccountRouter.post('/resend', async (req, res) => {
     await sendEmail({
       to: row.email,
       toName: row.name,
-      subject: 'Votre lien Tableau de Garanti',
+      subject: 'Votre lien Garant-AI',
       html: welcomeEmailHtml(row.name, depotLink(row.token)),
     })
   }

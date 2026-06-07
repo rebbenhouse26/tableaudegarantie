@@ -57,8 +57,8 @@ export default function PatientUpload() {
     <div className="acct">
       <div className="topbar">
         <span className="brand">
-          <span className="logo">TG</span>
-          Tableau de Garanti
+          <span className="logo">GA</span>
+          Garant-AI
         </span>
       </div>
 

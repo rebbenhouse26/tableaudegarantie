@@ -1,4 +1,4 @@
-// Client HTTP minimal pour l'API Tableau de Garanti.
+// Client HTTP minimal pour l'API Garant-AI.
 // L'URL de base peut être surchargée via VITE_API_URL (voir .env.example).
 export const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api'
 

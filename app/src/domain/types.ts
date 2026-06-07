@@ -1,4 +1,4 @@
-// Types métier de Tableau de Garanti.
+// Types métier de Garant-AI.
 // Une garantie mutuelle s'exprime soit en % de la base de remboursement Sécu (BRSS),
 // soit en forfait annuel en euros.
 

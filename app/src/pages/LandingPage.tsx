@@ -41,8 +41,8 @@ export default function LandingPage() {
       <nav>
         <div className="container nav-in">
           <div className="brand">
-            <div className="logo">TG</div>
-            Tableau de Garanti
+            <div className="logo">GA</div>
+            Garant-AI
           </div>
           <div className="nav-links">
             <a href="#probleme">Le problème</a>
@@ -66,7 +66,7 @@ export default function LandingPage() {
             patient.
           </h1>
           <p className="lead">
-            Tableau de Garanti lit la mutuelle du patient et génère <b>3 devis clairs</b> — dont un à
+            Garant-AI lit la mutuelle du patient et génère <b>3 devis clairs</b> — dont un à
             <b> 0 € de reste à charge</b> et un <b>premium payable en plusieurs fois</b>. Le patient
             comprend, compare et signe — souvent dès le rendez‑vous.
           </p>
@@ -190,7 +190,7 @@ export default function LandingPage() {
           <p className="eyebrow">Témoignages</p>
           <h2 className="sec">Ils gagnent du temps et font accepter plus de devis</h2>
           <p className="sec-sub">
-            Ce que les cabinets pensent de Tableau de Garanti.
+            Ce que les cabinets pensent de Garant-AI.
           </p>
           <div className="grid3">
             <Avis
@@ -245,7 +245,7 @@ export default function LandingPage() {
           <p className="eyebrow">Demander une démo</p>
           <h2 className="sec">Voyez l'outil sur vos propres cas</h2>
           <p className="sec-sub">
-            Laissez-nous vos coordonnées : nous vous montrons comment Tableau de Garanti s'intègre à
+            Laissez-nous vos coordonnées : nous vous montrons comment Garant-AI s'intègre à
             votre cabinet.
           </p>
           <div className="form-wrap">
@@ -334,7 +334,7 @@ export default function LandingPage() {
           <div className="disclaimer">
             <span>⚠️</span>
             <div>
-              <b>Estimation non contractuelle.</b> Tableau de Garanti fournit une aide à la lecture
+              <b>Estimation non contractuelle.</b> Garant-AI fournit une aide à la lecture
               des garanties et une estimation du reste à charge. Le remboursement définitif relève de
               la mutuelle et de l'Assurance Maladie. L'outil n'incite jamais à modifier un plan de
               traitement médicalement justifié.
@@ -349,8 +349,8 @@ export default function LandingPage() {
           <div className="foot-grid">
             <div>
               <div className="brand" style={{ color: '#fff', marginBottom: 12 }}>
-                <div className="logo">TG</div>
-                Tableau de Garanti
+                <div className="logo">GA</div>
+                Garant-AI
               </div>
               <p style={{ margin: 0, maxWidth: 340, color: '#9fb8cb' }}>
                 Le copilote financier du devis dentaire. Des remboursements lisibles, des patients
@@ -376,7 +376,7 @@ export default function LandingPage() {
           <div className="legal">
             Données de santé hébergées chez un hébergeur certifié HDS, conformément au RGPD. Les
             estimations fournies sont non contractuelles et soumises à la validation du cabinet. ©
-            2026 Tableau de Garanti — démonstration. Les mutuelles et montants présentés sont
+            2026 Garant-AI — démonstration. Les mutuelles et montants présentés sont
             fictifs.
           </div>
         </div>

@@ -1,9 +1,9 @@
 {
-  "name": "tableau-de-garanti-server",
+  "name": "garant-ai-server",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "API backend de Tableau de Garanti — comptes cabinets, devis, leads",
+  "description": "API backend de Garant-AI — comptes cabinets, devis, leads",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",

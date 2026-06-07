@@ -5,11 +5,11 @@
  * Variables d'environnement :
  *   BREVO_API_KEY     : clé API Brevo (obligatoire pour activer l'envoi)
  *   EMAIL_SENDER      : adresse expéditeur vérifiée chez Brevo (ex. noreply@mondomaine.fr)
- *   EMAIL_SENDER_NAME : nom affiché de l'expéditeur (défaut « Tableau de Garanti »)
+ *   EMAIL_SENDER_NAME : nom affiché de l'expéditeur (défaut « Garant-AI »)
  */
 const BREVO_API_KEY = process.env.BREVO_API_KEY ?? ''
 const EMAIL_SENDER = process.env.EMAIL_SENDER ?? ''
-const EMAIL_SENDER_NAME = process.env.EMAIL_SENDER_NAME ?? 'Tableau de Garanti'
+const EMAIL_SENDER_NAME = process.env.EMAIL_SENDER_NAME ?? 'Garant-AI'
 
 export function emailAvailable(): boolean {
   return !!BREVO_API_KEY && !!EMAIL_SENDER
@@ -56,7 +56,7 @@ export async function sendEmail(opts: {
 export function welcomeEmailHtml(name: string, link: string): string {
   const hello = name ? `Bonjour ${name},` : 'Bonjour,'
   return `<div style="font-family:Helvetica,Arial,sans-serif;max-width:520px;margin:auto;color:#21252b">
-  <h2 style="color:#1f6fb2">Votre espace Tableau de Garanti</h2>
+  <h2 style="color:#1f6fb2">Votre espace Garant-AI</h2>
   <p>${hello}</p>
   <p>Votre compte a bien été créé. Pour transmettre votre tableau de garanties mutuelle
   (photo ou PDF), cliquez sur le bouton ci-dessous :</p>

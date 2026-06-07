@@ -62,9 +62,9 @@ export default function DemoApp() {
     <div className="app">
       <header className="app-head">
         <div className="brand">
-          <div className="logo">TG</div>
+          <div className="logo">GA</div>
           <div>
-            <h1>Tableau de Garanti</h1>
+            <h1>Garant-AI</h1>
             <p>Le copilote financier du devis dentaire</p>
           </div>
         </div>
@@ -153,7 +153,7 @@ export default function DemoApp() {
         )}
 
         <p className="footer-note">
-          Démonstration — Tableau de Garanti · Le copilote financier du devis dentaire
+          Démonstration — Garant-AI · Le copilote financier du devis dentaire
         </p>
       </div>
     </div>

@@ -19,8 +19,8 @@ export default function Legal({ page }: { page: Page }) {
     <div className="acct">
       <div className="topbar">
         <Link to="/" className="brand">
-          <div className="logo">TG</div>
-          Tableau de Garanti
+          <div className="logo">GA</div>
+          Garant-AI
         </Link>
       </div>
 
@@ -88,7 +88,7 @@ export default function Legal({ page }: { page: Page }) {
           {page === 'securite' && (
             <div className="legal">
               <p>
-                Tableau de Garanti traite des <b>données de santé</b> (tableaux de garanties et devis
+                Garant-AI traite des <b>données de santé</b> (tableaux de garanties et devis
                 dentaires). Ces données relèvent de la catégorie particulière de l'article 9 du RGPD et,
                 en France, doivent être hébergées chez un <b>Hébergeur de Données de Santé (HDS) certifié</b>.
                 Voici comment nous nous y conformons.
