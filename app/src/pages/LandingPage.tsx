@@ -97,7 +97,7 @@ export default function LandingPage() {
               <span className="tick">✓</span> Plus de devis acceptés
             </span>
             <span>
-              <span className="tick">✓</span> Reste à charge clair en minutes
+              <span className="tick">✓</span> Estimation précise avant la réponse mutuelle
             </span>
             <span>
               <span className="tick">✓</span> Paiement en plusieurs fois
@@ -141,7 +141,7 @@ export default function LandingPage() {
           </p>
           <div className="grid3">
             <Feature ico="📄" title="Lecture automatique" text="Le patient envoie sa mutuelle (photo, PDF ou capture). L'application extrait les garanties dentaires : prothèse, implant, paro, orthodontie." />
-            <Feature ico="🧮" title="Reste à charge estimé" text="Croisement des garanties avec les actes envisagés. Double calcul et règles métier pour fiabiliser l'estimation." />
+            <Feature ico="🧮" title="Estimation précise immédiate" text="Croisement des garanties et de la cotation CCAM : une estimation fiable du remboursement dès le rendez-vous, sans attendre la réponse de la mutuelle (souvent 10 à 15 jours)." />
             <Feature ico="📊" title="Devis optimisé" text="Garant-AI propose au praticien le devis qui garantit le meilleur traitement, avec la prise en charge maximale et une facilité de paiement." />
             <Feature ico="⏱️" title="Moins d'administratif" text="Vos assistantes passent moins de temps à décrypter les contrats, plus de temps avec les patients." />
             <Feature ico="✅" title="Validation cabinet" text="Rien n'est envoyé sans votre contrôle. Le rapport patient reste explicitement une estimation non contractuelle." />
@@ -252,6 +252,10 @@ export default function LandingPage() {
             <Faq
               q="Comment Garant-AI lit-il la mutuelle du patient ?"
               a="Le patient envoie une simple photo ou un PDF de son tableau de garanties. L'IA en extrait automatiquement les garanties dentaires (prothèse, implant, parodontie, orthodontie) ainsi que la base de remboursement."
+            />
+            <Faq
+              q="L'estimation est-elle disponible avant la réponse de la mutuelle ?"
+              a="Oui, c'est tout l'intérêt. Garant-AI calcule une estimation précise du remboursement dès le rendez-vous, à partir des garanties et de la cotation CCAM, sans attendre la prise en charge de la mutuelle (souvent 10 à 15 jours)."
             />
             <Faq
               q="Les estimations sont-elles contractuelles ?"
