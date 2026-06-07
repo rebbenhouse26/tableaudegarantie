@@ -143,40 +143,27 @@ export default function GarantiesImporter({ onResult, onFile }: Props) {
               </p>
             </div>
 
-            {/* Exemple visuel d'un tableau de garanties (la ligne dentaire est surlignée) */}
+            {/* Exemple visuel réel d'un tableau de garanties */}
             <figure className="gi-example">
               <figcaption>Exemple — à quoi ça ressemble</figcaption>
-              <div className="gi-ex-table">
-                <div className="gi-ex-head">
-                  <span>Garantie</span>
-                  <span>Remb.</span>
-                </div>
-                <div className="gi-ex-row">
-                  <span>Hospitalisation</span>
-                  <span>100 %</span>
-                </div>
-                <div className="gi-ex-row">
-                  <span>Optique</span>
-                  <span>150 €</span>
-                </div>
-                <div className="gi-ex-row gi-ex-hl">
-                  <span>Soins dentaires</span>
-                  <span>100 %</span>
-                </div>
-                <div className="gi-ex-row gi-ex-hl">
-                  <span>Prothèses dentaires</span>
-                  <span>300 %</span>
-                </div>
-                <div className="gi-ex-row gi-ex-hl">
-                  <span>Orthodontie</span>
-                  <span>250 €</span>
-                </div>
-                <div className="gi-ex-row">
-                  <span>Audiologie</span>
-                  <span>100 %</span>
-                </div>
-              </div>
-              <p className="gi-ex-note">👆 C'est la partie <b>dentaire</b> qui nous intéresse.</p>
+              <a
+                href="/exemple-tableau-garanties.jpg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="gi-ex-imglink"
+                title="Cliquer pour agrandir"
+              >
+                <img
+                  className="gi-ex-img"
+                  src="/exemple-tableau-garanties.jpg"
+                  alt="Exemple de tableau de garanties d'une mutuelle, avec une section Dentaire"
+                  loading="lazy"
+                />
+                <span className="gi-ex-zoom">🔍 Cliquer pour agrandir</span>
+              </a>
+              <p className="gi-ex-note">
+                👆 Repérez la section <b>DENTAIRE</b> (Soins dentaires, Prothèses, Orthodontie).
+              </p>
             </figure>
           </div>
         </div>
