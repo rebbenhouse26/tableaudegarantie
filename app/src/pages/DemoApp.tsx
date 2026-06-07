@@ -805,7 +805,7 @@ function Step4({
         </div>
       </div>
 
-      <table style={{ marginTop: 16 }}>
+      <table className="resp-cards" style={{ marginTop: 16 }}>
         <thead>
           <tr>
             <th>Acte</th>
@@ -819,16 +819,16 @@ function Step4({
             const changed = Math.abs(p.optimPrix - p.currentPrix) > 0.5 || Math.abs(p.optimRac - p.currentRac) > 0.5
             return (
               <tr key={i}>
-                <td>
+                <td data-label="Acte">
                   <b>{p.acteLabel}</b>
                   {p.line.dent ? <span style={{ color: 'var(--muted)' }}> · dent {p.line.dent}</span> : null}
                 </td>
-                <td style={{ color: 'var(--muted)' }}>
+                <td data-label="Devis actuel" style={{ color: 'var(--muted)' }}>
                   {p.currentNom}
                   <br />
                   {eur(p.currentPrix)} · RAC {eur(p.currentRac)}
                 </td>
-                <td>
+                <td data-label="Devis optimisé">
                   {changed ? <b>{p.optimNom}</b> : <span style={{ color: 'var(--muted)' }}>inchangé</span>}
                   <br />
                   {eur(p.optimPrix)} ·{' '}
@@ -841,7 +841,7 @@ function Step4({
                     </span>
                   )}
                 </td>
-                <td className="num" style={{ color: p.gainCabinet > 0 ? 'var(--green)' : p.gainCabinet < 0 ? 'var(--red)' : 'inherit' }}>
+                <td className="num" data-label="Honoraires cabinet" style={{ color: p.gainCabinet > 0 ? 'var(--green)' : p.gainCabinet < 0 ? 'var(--red)' : 'inherit' }}>
                   {p.gainCabinet > 0 ? '+ ' : ''}
                   {eur(p.gainCabinet)}
                 </td>
@@ -938,7 +938,7 @@ function Step4({
           </p>
         </div>
         <div className="rbd">
-          <table>
+          <table className="resp-cards">
             <thead>
               <tr>
                 <th>Acte proposé</th>
@@ -955,17 +955,17 @@ function Step4({
                 const r = res[i]
                 return (
                   <tr key={i}>
-                    <td>
+                    <td data-label="Acte">
                       {L.labelOverride ?? v.nom}
                       {L.qty > 1 ? ` ×${L.qty}` : ''}
                     </td>
-                    <td className="num">{eur(r.prix)}</td>
-                    <td className="num">{eur(r.secu)}</td>
-                    <td className="num">{eur(r.mut)}</td>
-                    <td className="num" style={{ color: 'var(--green)' }}>
+                    <td className="num" data-label="Prix">{eur(r.prix)}</td>
+                    <td className="num" data-label="Part Sécu">{eur(r.secu)}</td>
+                    <td className="num" data-label="Part mutuelle">{eur(r.mut)}</td>
+                    <td className="num" data-label="Remb. total" style={{ color: 'var(--green)' }}>
                       {eur(r.secu + r.mut)}
                     </td>
-                    <td className="num">
+                    <td className="num" data-label="À votre charge">
                       <b>{eur(r.rac)}</b>
                     </td>
                   </tr>
@@ -974,22 +974,22 @@ function Step4({
             </tbody>
             <tfoot>
               <tr style={{ borderTop: '2px solid var(--blue)' }}>
-                <td>
+                <td data-label="">
                   <b>Total</b>
                 </td>
-                <td className="num">
+                <td className="num" data-label="Prix">
                   <b>{eur(t.prix)}</b>
                 </td>
-                <td className="num">
+                <td className="num" data-label="Part Sécu">
                   <b>{eur(t.secu)}</b>
                 </td>
-                <td className="num">
+                <td className="num" data-label="Part mutuelle">
                   <b>{eur(t.mut)}</b>
                 </td>
-                <td className="num" style={{ color: 'var(--green)' }}>
+                <td className="num" data-label="Remb. total" style={{ color: 'var(--green)' }}>
                   <b>{eur(t.secu + t.mut)}</b>
                 </td>
-                <td className="num">
+                <td className="num" data-label="À votre charge">
                   <b>{eur(t.rac)}</b>
                 </td>
               </tr>
@@ -1013,7 +1013,7 @@ function Step4({
               <p>Honoraires ajustés au mieux des garanties · reste à charge minimisé</p>
             </div>
             <div className="rbd">
-              <table>
+              <table className="resp-cards">
                 <thead>
                   <tr>
                     <th>Acte optimisé</th>
@@ -1029,17 +1029,17 @@ function Step4({
                     const r = optimRes[i]
                     return (
                       <tr key={i}>
-                        <td>
+                        <td data-label="Acte">
                           {optim.perLine[i].optimNom}
                           {L.qty > 1 ? ` ×${L.qty}` : ''}
                         </td>
-                        <td className="num">{eur(r.prix)}</td>
-                        <td className="num">{eur(r.secu)}</td>
-                        <td className="num">{eur(r.mut)}</td>
-                        <td className="num" style={{ color: 'var(--green)' }}>
+                        <td className="num" data-label="Prix">{eur(r.prix)}</td>
+                        <td className="num" data-label="Part Sécu">{eur(r.secu)}</td>
+                        <td className="num" data-label="Part mutuelle">{eur(r.mut)}</td>
+                        <td className="num" data-label="Remb. total" style={{ color: 'var(--green)' }}>
                           {eur(r.secu + r.mut)}
                         </td>
-                        <td className="num">
+                        <td className="num" data-label="À votre charge">
                           <b>{eur(r.rac)}</b>
                         </td>
                       </tr>
@@ -1048,22 +1048,22 @@ function Step4({
                 </tbody>
                 <tfoot>
                   <tr style={{ borderTop: '2px solid var(--green)' }}>
-                    <td>
+                    <td data-label="">
                       <b>Total</b>
                     </td>
-                    <td className="num">
+                    <td className="num" data-label="Prix">
                       <b>{eur(to.prix)}</b>
                     </td>
-                    <td className="num">
+                    <td className="num" data-label="Part Sécu">
                       <b>{eur(to.secu)}</b>
                     </td>
-                    <td className="num">
+                    <td className="num" data-label="Part mutuelle">
                       <b>{eur(to.mut)}</b>
                     </td>
-                    <td className="num" style={{ color: 'var(--green)' }}>
+                    <td className="num" data-label="Remb. total" style={{ color: 'var(--green)' }}>
                       <b>{eur(to.secu + to.mut)}</b>
                     </td>
-                    <td className="num">
+                    <td className="num" data-label="À votre charge">
                       <b>{eur(to.rac)}</b>
                     </td>
                   </tr>

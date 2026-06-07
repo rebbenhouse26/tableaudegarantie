@@ -620,6 +620,73 @@
   .app .add-row {
     grid-template-columns: 1fr 1fr;
   }
+  /* Moins de marge perdue sur petit écran */
+  .app .card {
+    padding: 16px 14px;
+  }
+  .app .report .rbd {
+    padding: 12px;
+  }
+  .app .nc {
+    padding: 10px 12px;
+  }
+
+  /* Tableaux d'analyse : on les transforme en CARTES empilées (plus de colonnes coupées) */
+  .app table.resp-cards thead {
+    display: none;
+  }
+  .app table.resp-cards,
+  .app table.resp-cards tbody,
+  .app table.resp-cards tfoot,
+  .app table.resp-cards tr,
+  .app table.resp-cards td {
+    display: block;
+    width: 100%;
+  }
+  .app table.resp-cards tr {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 6px 12px;
+    margin-bottom: 12px;
+    background: #fff;
+  }
+  .app table.resp-cards td {
+    border: none;
+    padding: 7px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 14px;
+    text-align: right;
+    font-size: 13.5px;
+  }
+  .app table.resp-cards td + td {
+    border-top: 1px dashed var(--line);
+  }
+  .app table.resp-cards td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    text-align: left;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  /* Cellule sans libellé (ex. « Total ») : pleine largeur, en gras */
+  .app table.resp-cards td[data-label='']::before {
+    content: none;
+  }
+  .app table.resp-cards td[data-label=''] {
+    justify-content: flex-start;
+    font-weight: 700;
+    border-top: none;
+  }
+  .app table.resp-cards tfoot tr {
+    background: var(--grey);
+    border-color: var(--blue);
+  }
 }
 @media print {
   .app header.app-head,
