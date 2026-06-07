@@ -111,3 +111,141 @@
   display: flex;
   gap: 9px;
 }
+
+/* --- Aide patient : où trouver son tableau de garanties --- */
+.gi-help-toggle {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--blue);
+  padding: 4px 0;
+}
+.gi-help-toggle:hover {
+  text-decoration: underline;
+}
+.gi-q {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.gi-chev {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.gi-help {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  background: var(--light, #f3f8ff);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+.gi-help-intro {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--dark);
+}
+.gi-help-cols {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.gi-where h4 {
+  margin: 0 0 8px;
+  font-size: 13.5px;
+  color: var(--dark);
+}
+.gi-where ol {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--dark);
+}
+.gi-where li {
+  margin-bottom: 6px;
+}
+.gi-help-tip {
+  margin: 12px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* Exemple visuel (mini-tableau) */
+.gi-example {
+  margin: 0;
+}
+.gi-example figcaption {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.gi-ex-table {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(16, 35, 55, 0.06);
+}
+.gi-ex-head,
+.gi-ex-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+}
+.gi-ex-head {
+  background: var(--dark);
+  color: #fff;
+  font-weight: 700;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.gi-ex-row {
+  border-top: 1px solid var(--line);
+  color: var(--dark);
+}
+.gi-ex-row span:last-child {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.gi-ex-hl {
+  background: var(--greenbg, #e9f8f1);
+  position: relative;
+}
+.gi-ex-hl span:last-child {
+  color: var(--green);
+}
+.gi-ex-note {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 600;
+}
+
+@media (max-width: 560px) {
+  .gi-help-cols {
+    grid-template-columns: 1fr;
+  }
+}
