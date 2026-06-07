@@ -47,6 +47,7 @@ export default function LandingPage() {
           <div className="nav-links">
             <a href="#probleme">Le problème</a>
             <a href="#fonctionnement">Fonctionnement</a>
+            <a href="#avis">Avis</a>
             <a href="#tarifs">Tarifs</a>
             <Link to="/connexion">Connexion</Link>
             <Link className="btn" to="/app">
@@ -75,6 +76,19 @@ export default function LandingPage() {
             <a className="btn lg ghost" href="#fonctionnement">
               Voir comment ça marche
             </a>
+          </div>
+          <div className="social-proof">
+            <div className="avatars">
+              <span style={{ background: '#2f5fe0' }}>AD</span>
+              <span style={{ background: '#16a34a' }}>SM</span>
+              <span style={{ background: '#8b5cf6' }}>JL</span>
+              <span style={{ background: '#f59e0b' }}>CB</span>
+              <span className="more">+</span>
+            </div>
+            <div className="social-txt">
+              <div className="stars">★★★★★</div>
+              <span>Conçu avec et pour les chirurgiens‑dentistes</span>
+            </div>
           </div>
           <div className="reassure">
             <span>
@@ -169,8 +183,45 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* TÉMOIGNAGES / AVIS */}
+      <section id="avis">
+        <div className="container">
+          <p className="eyebrow">Témoignages</p>
+          <h2 className="sec">Ils gagnent du temps et font accepter plus de devis</h2>
+          <p className="sec-sub">
+            Ce que les cabinets pensent de Tableau de Garanti.
+          </p>
+          <div className="grid3">
+            <Avis
+              initials="AD"
+              color="#2f5fe0"
+              name="Dr A. Dubois"
+              role="Chirurgien‑dentiste · Lyon"
+              text="Le patient arrive en connaissant son reste à charge. Les devis se signent beaucoup plus vite, et mon assistante a gagné un temps fou."
+            />
+            <Avis
+              initials="SM"
+              color="#16a34a"
+              name="S. Martin"
+              role="Assistante dentaire · Nantes"
+              text="Fini les heures à décortiquer les mutuelles. Une photo du tableau, et l'estimation est prête. Les trois devis aident vraiment le patient à choisir."
+            />
+            <Avis
+              initials="JL"
+              color="#8b5cf6"
+              name="Dr J. Lefèvre"
+              role="Omnipraticien · Bordeaux"
+              text="L'option « reste à charge 0 » rassure, et le paiement en plusieurs fois débloque les gros plans de traitement. Très convaincant en consultation."
+            />
+          </div>
+          <p className="avis-note">
+            Témoignages illustratifs — à remplacer par vos avis réels avant publication.
+          </p>
+        </div>
+      </section>
+
       {/* TARIFS */}
-      <section id="tarifs">
+      <section id="tarifs" className="alt">
         <div className="container">
           <p className="eyebrow">Tarifs</p>
           <h2 className="sec">Un abonnement simple, par cabinet</h2>
@@ -188,7 +239,7 @@ export default function LandingPage() {
       </section>
 
       {/* DÉMO / LEADS */}
-      <section id="demo" className="alt">
+      <section id="demo">
         <div className="container">
           <p className="eyebrow">Demander une démo</p>
           <h2 className="sec">Voyez l'outil sur vos propres cas</h2>
@@ -350,6 +401,36 @@ function Feature({ ico, title, text }: { ico: string; title: string; text: strin
       <div className="ico">{ico}</div>
       <h3>{title}</h3>
       <p>{text}</p>
+    </div>
+  )
+}
+
+function Avis({
+  initials,
+  color,
+  name,
+  role,
+  text,
+}: {
+  initials: string
+  color: string
+  name: string
+  role: string
+  text: string
+}) {
+  return (
+    <div className="card avis-card">
+      <div className="stars">★★★★★</div>
+      <p className="avis-quote">« {text} »</p>
+      <div className="avis-author">
+        <span className="avis-ava" style={{ background: color }}>
+          {initials}
+        </span>
+        <div>
+          <b>{name}</b>
+          <span className="avis-role">{role}</span>
+        </div>
+      </div>
     </div>
   )
 }
