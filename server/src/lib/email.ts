@@ -21,6 +21,8 @@ export async function sendEmail(opts: {
   toName?: string
   subject: string
   html: string
+  replyTo?: string
+  replyToName?: string
 }): Promise<{ ok: boolean; error?: string }> {
   if (!emailAvailable()) {
     return { ok: false, error: 'E-mail non configuré (BREVO_API_KEY / EMAIL_SENDER absent).' }
@@ -36,6 +38,9 @@ export async function sendEmail(opts: {
       body: JSON.stringify({
         sender: { email: EMAIL_SENDER, name: EMAIL_SENDER_NAME },
         to: [{ email: opts.to, name: opts.toName || opts.to }],
+        ...(opts.replyTo
+          ? { replyTo: { email: opts.replyTo, name: opts.replyToName || opts.replyTo } }
+          : {}),
         subject: opts.subject,
         htmlContent: opts.html,
       }),
@@ -50,6 +55,44 @@ export async function sendEmail(opts: {
     console.error('Brevo email exception', e)
     return { ok: false, error: 'Service e-mail indisponible.' }
   }
+}
+
+/** Gabarit HTML de la notification interne envoyée à l'équipe quand un cabinet demande une démo. */
+export function leadNotificationHtml(lead: {
+  nom: string
+  cabinet?: string
+  email: string
+  tel?: string
+  profil?: string
+  taille?: string
+  message?: string
+}): string {
+  const row = (label: string, value?: string) =>
+    value
+      ? `<tr><td style="padding:6px 12px;color:#5a646e;white-space:nowrap">${label}</td>
+         <td style="padding:6px 12px;font-weight:600;color:#21252b">${value}</td></tr>`
+      : ''
+  return `<div style="font-family:Helvetica,Arial,sans-serif;max-width:560px;margin:auto;color:#21252b">
+  <h2 style="color:#2f5fe0">🔔 Nouvelle demande de démo</h2>
+  <p>Un cabinet vient de remplir le formulaire « Demander une démo » sur le site.</p>
+  <table style="border-collapse:collapse;background:#f6f8fc;border:1px solid #e6ebf3;border-radius:10px;width:100%">
+    ${row('Praticien', lead.nom)}
+    ${row('Cabinet', lead.cabinet)}
+    ${row('E-mail', lead.email)}
+    ${row('Téléphone', lead.tel)}
+    ${row('Profil', lead.profil)}
+    ${row('Nb praticiens', lead.taille)}
+    ${row('Message', lead.message)}
+  </table>
+  <p style="margin-top:18px">
+    <a href="mailto:${lead.email}" style="background:#2f5fe0;color:#fff;text-decoration:none;
+       padding:11px 22px;border-radius:8px;font-weight:600;display:inline-block">
+      Répondre à ${lead.nom}
+    </a>
+  </p>
+  <p style="font-size:12px;color:#8a949e;margin-top:20px">Vous pouvez aussi simplement répondre à cet e-mail :
+  la réponse part directement vers le praticien.</p>
+</div>`
 }
 
 /** Gabarit HTML de l'e-mail de bienvenue patient (lien vers son espace de dépôt). */
